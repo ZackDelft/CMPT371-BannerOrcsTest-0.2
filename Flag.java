@@ -23,8 +23,8 @@ public class Flag extends FlagSuper{
 	}
 	
 	public void setDefault() {
-		x = 9 * gp.tileSize - (gp.tileSize/2);
-		y = 9 * gp.tileSize - (gp.tileSize/2);
+		x = (gp.maxScreenCol/2) * gp.tileSize - (gp.tileSize/2);
+		y = (gp.maxScreenCol/2) * gp.tileSize - (gp.tileSize/2);
 	}
 	
 	public void setHolder(Entity entity) {
