@@ -11,9 +11,10 @@ public class Entity {
 	public int speed;
 	public int score;
 
-	public boolean ready = false;
-	public InetAddress ip;
-	public int port;
+	public boolean ready = false; // for server communication
+	public InetAddress ip; // used by server 
+	public int port; // used by server
+	public long lastTimeUpdated = -1; // used by server to control return messages of its own position
 	
 	// for image
 	public BufferedImage characterImage;

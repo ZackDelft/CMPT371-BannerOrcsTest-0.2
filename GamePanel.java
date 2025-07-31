@@ -146,7 +146,7 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 		else if (started == true && finished == false) {
 			for (int i = 0; i < players.length; i++) {
-				players[i].update();
+				players[i].update(client);
 				zones[i].update();
 			}
 		}

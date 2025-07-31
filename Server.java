@@ -21,6 +21,7 @@ public class Server extends Thread{
     }
 
     public void run() {
+        int id;
         while (gp.finished != true) {
             byte[] data = new byte[1024];
             DatagramPacket packet = new DatagramPacket(data, data.length);
@@ -41,6 +42,8 @@ public class Server extends Thread{
             String[] parseMessage = message.split(" ");
             switch (parseMessage[0].trim()) {
                 // connection message
+                // - expects "00" from client
+                // - returns "00 playerID"
                 case "00":
                     if (currentPlayers < players.length) {
                         int ID = currentPlayers + 1;
@@ -51,21 +54,39 @@ public class Server extends Thread{
                     }
                     break;
                 // ready message
+                // - expects "01 readyStatus playerID"
+                // - returns "01 start" if all 4 players ready
                 case "01":
-                    int player = Integer.parseInt(parseMessage[2].trim());
+                    id = Integer.parseInt(parseMessage[2].trim());
                     if (parseMessage[1].trim().equalsIgnoreCase("1")) {
-                        players[player - 1].ready = true;
+                        players[id - 1].ready = true;
                     }
                     else {
-                        players[player - 1].ready = false;
+                        players[id - 1].ready = false;
                     }
                     if (currentPlayers == players.length) {
                         if (allReady(players) == true) {
                             message = "01 start";
                             for (int i = 0; i < players.length; i++) {
+                                players[i].lastTimeUpdated = System.nanoTime();
                                 sendData(message.getBytes(), players[i].ip, players[i].port);                                
                             }
                         }                       
+                    }
+                    break;
+                // Player position update message
+                // - expects "02 playerID x y"
+                // - returns "02 playerID x y" to all other players 
+                case "02":
+                    id = Integer.parseInt(parseMessage[1].trim());
+                    int x = Integer.parseInt(parseMessage[2].trim());
+                    int y = Integer.parseInt(parseMessage[3].trim());
+                    players[id - 1].x = x;
+                    players[id - 1].y = y;
+                    for (int i = 0; i < currentPlayers; i++) {
+                        if (id != players[i].ID) {
+                            sendData(packet.getData(), players[i].ip, players[i].port);
+                        }
                     }
                     break;
                 default:

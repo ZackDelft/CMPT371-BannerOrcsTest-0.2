@@ -67,7 +67,9 @@ public class Player extends Entity{
 			e.printStackTrace();
 		}
 	}
- 	public void update() {
+ 	public void update(Client client) {
+		int prevX = x;
+		int prevY = y;
  		if (isThrown == true) {
  			if (noLongerThrownAt <= System.nanoTime()) {
  				isThrown = false;
@@ -165,6 +167,10 @@ public class Player extends Entity{
 				}
 			}
 		}
+		if (prevX != x || prevY != y) {
+			// Send update to server
+			client.sendPositionUpdate(x, y);
+		}	
 	}
 	public void draw(Graphics2D g2) {
 		/*
