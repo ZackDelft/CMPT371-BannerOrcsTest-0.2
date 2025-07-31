@@ -85,6 +85,26 @@ public class Server extends Thread{
                         }
                     }
                     break;
+                // Player flag possession update message
+                // - expects "03 playerID [0=drop,1=pickup]"
+                // - forwards message to other players
+                case "03":
+                    id = Integer.parseInt(parseMessage[1].trim());
+                    int possessed = Integer.parseInt(parseMessage[2].trim());
+                    if (possessed == 1) {
+                        players[id - 1].hasFlag = true;
+                        flag.possessed = id;
+                    }
+                    else {
+                        players[id - 1].hasFlag = false;
+                        flag.possessed = 0;
+                    }
+                    for (int i = 0; i < currentPlayers; i++) {
+                        if (id != players[i].ID) {
+                            sendData(packet.getData(), players[i].ip, players[i].port);
+                        }
+                    }
+                    break;
                 default:
                     break;
             }

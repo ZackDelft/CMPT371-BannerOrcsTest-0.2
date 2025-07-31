@@ -63,7 +63,21 @@ public class Client extends Thread {
                     int y = Integer.parseInt(parsedMessage[3].trim());
                     gp.players[id - 1].x = x;
                     gp.players[id - 1].y = y;
-                    break;        
+                    break; 
+                // Server flag possession update message
+                // - expects "03 playerID [0=drop,1=pickup]"
+                // - updates flag status
+                case "03":
+                    id = Integer.parseInt(parsedMessage[1].trim());
+                    int possessed = Integer.parseInt(parsedMessage[2].trim());
+                    if (possessed == 1) {
+                        gp.players[id - 1].hasFlag = true;
+                        gp.flag.possessed = id;
+                    }
+                    else {
+                        gp.players[id - 1].hasFlag = false;
+                        gp.flag.possessed = 0;
+                    }
                 default:
                     break;
             }

@@ -124,9 +124,11 @@ public class Player extends Entity{
 			}
 			gp.cCheck.checkTile(this);
 		}
-		else {
-			gp.cCheck.flagChecker(this, client);
-			gp.cCheck.checkZone(this);
+		else {			
+			if (gp.playerControl == this.ID) {
+				gp.cCheck.flagChecker(this, client);
+				gp.cCheck.checkZone(this);
+			}
 			gp.cCheck.checkTile(this);
 			gp.cCheck.checkPlayers(this);
 		}
