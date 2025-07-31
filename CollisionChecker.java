@@ -106,7 +106,7 @@ public class CollisionChecker {
 	}
 	
 	// Check if player touched flag
-	public void flagChecker(Entity entity) {
+	public void flagChecker(Entity entity, Client client) {
 		
 		int flagTop = gp.flag.y;
 		int flagBottom = gp.flag.y + gp.tileSize;
@@ -147,6 +147,11 @@ public class CollisionChecker {
 				entity.hasFlag = true;
 			}
 			break;
+		}
+		if (entity.hasFlag == true) {
+			// send signal to server player has picked up flag
+			// Client flag pickup communication
+			client.sendFlagPossesion();
 		}
 	}
 	

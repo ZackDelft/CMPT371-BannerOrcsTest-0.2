@@ -10,9 +10,11 @@ public class Server extends Thread{
     private GamePanel gp;
     Entity[] players = new Entity[4];
     int currentPlayers = 0;
+    Flag flag;
 
     public Server(GamePanel gp) {
         this.gp = gp;
+        flag = new Flag(gp);
         try {
             this.socket = new DatagramSocket(53333);
         } catch (SocketException e) {
@@ -32,13 +34,6 @@ public class Server extends Thread{
             }
             String message = new String(packet.getData());
             System.out.println("Client > " + message + " Port: " + packet.getPort() + " ip: " + packet.getAddress().getHostAddress());
-            // if (message.trim().equalsIgnoreCase("00")) {
-            //     int ID = currentPlayers + 1;
-            //     message = "00 " + ID;
-            //     players[currentPlayers] = new Player(gp, null, ID);
-            //     sendData(message.getBytes(), packet.getAddress(), packet.getPort());
-            //     currentPlayers++;
-            // }
             String[] parseMessage = message.split(" ");
             switch (parseMessage[0].trim()) {
                 // connection message
@@ -56,6 +51,7 @@ public class Server extends Thread{
                 // ready message
                 // - expects "01 readyStatus playerID"
                 // - returns "01 start" if all 4 players ready
+                // - should rearange order of ID and readyStatus
                 case "01":
                     id = Integer.parseInt(parseMessage[2].trim());
                     if (parseMessage[1].trim().equalsIgnoreCase("1")) {
@@ -94,8 +90,10 @@ public class Server extends Thread{
             }
             
         }
+        socket.close();
     }
 
+    // Supporting function to send the actual data
     public void sendData(byte[] data, InetAddress ip, int port) {
         DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
         try {
@@ -105,6 +103,7 @@ public class Server extends Thread{
         }
     }
 
+    // Supporting function for game start state comparison
     public boolean allReady(Entity[] players) {
         for (int i = 0; i < players.length; i++) {
             if (players[i].ready == false) {
