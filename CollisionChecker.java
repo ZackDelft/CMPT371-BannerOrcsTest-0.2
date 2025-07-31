@@ -14,9 +14,9 @@ public class CollisionChecker {
 		int entityBottom = entity.y + entity.hitbox.y + entity.hitbox.height;
 		
 		int entityLeftCol = entityLeft / gp.tileSize;
-		int entityRightCol = entityRight / gp.tileSize;
+		int entityRightCol = (entityRight - 1) / gp.tileSize;
 		int entityTopRow = entityTop / gp.tileSize;
-		int entityBottomRow = entityBottom / gp.tileSize;
+		int entityBottomRow = (entityBottom - 1) / gp.tileSize;
 		
 		int tileNum1, tileNum2;
 		
