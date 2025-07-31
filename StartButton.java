@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class StartButton {
+	Client client;
 	GamePanel gp;
 	BufferedImage startImage;
 	KeyHandler keyH;
@@ -13,6 +14,7 @@ public class StartButton {
 	public StartButton(GamePanel gp, KeyHandler keyH) {
 		this.gp = gp;
 		this.keyH = keyH;
+		this.client = gp.client;
 		this.x = ((gp.maxScreenCol / 2) - 1) * gp.tileSize;
 		this.y = (((gp.maxScreenCol / 2)) * gp.tileSize) - (gp.tileSize/2);
 		try {
@@ -22,9 +24,16 @@ public class StartButton {
 		}
 	}
 	
-	public void update() {
+	public void update(Client client) {
 		if (keyH.enterPressed == true) {
-			gp.started = true;
+			if (gp.ready == false) {
+				gp.ready = true;
+			}
+			else {
+				gp.ready = false;
+			}
+			client.sendReadyPacket(gp.ready);
+			keyH.enterPressed = false;
 		}
 	}
 	

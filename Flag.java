@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 
 
 public class Flag extends FlagSuper{
-	
+	GamePanel gp;
 	public int possessed = 0;
 	public Rectangle hitbox = new Rectangle(0,0,48,48);
 	

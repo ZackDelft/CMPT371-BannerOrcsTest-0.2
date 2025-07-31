@@ -2,15 +2,18 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.InetAddress;
 
 import javax.imageio.ImageIO;
 
 public class Player extends Entity{
 	GamePanel gp;
 	KeyHandler keyH;
-	public Player(GamePanel gp, KeyHandler keyH, int ID) {
+	public Player(GamePanel gp, KeyHandler keyH, int ID, InetAddress ip, int port) {
 		this.gp = gp;
 		this.keyH = keyH;
+		this.ip = ip;
+		this.port = port;
 		
 		// hit-box
 		hitbox = new Rectangle(6, 15, 36, 33);
@@ -75,22 +78,22 @@ public class Player extends Entity{
  				throwing = false;
  			}
  		}
- 		else if (keyH.spacePressed == true && ID == keyH.playerControl && isThrown == false && throwing == false) {
+ 		else if (keyH.spacePressed == true && ID == gp.playerControl && isThrown == false && throwing == false) {
  			if (System.nanoTime() >= nextThrowTime) {
  				gp.cCheck.checkThrowRange(this);
  			}
  		}
  		else if (isThrown == false && throwing == false) {
-			if (keyH.upPressed == true && ID == keyH.playerControl) {
+			if (keyH.upPressed == true && ID == gp.playerControl) {
 				direction = "up";
 			}
-			else if (keyH.downPressed == true && ID == keyH.playerControl) {
+			else if (keyH.downPressed == true && ID == gp.playerControl) {
 				direction = "down";
 			}
-			else if (keyH.leftPressed == true && ID == keyH.playerControl) {
+			else if (keyH.leftPressed == true && ID == gp.playerControl) {
 				direction = "left";
 			}
-			else if (keyH.rightPressed == true && ID == keyH.playerControl) {
+			else if (keyH.rightPressed == true && ID == gp.playerControl) {
 				direction = "right";
 			}
 			else {
