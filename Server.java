@@ -11,6 +11,7 @@ public class Server extends Thread{
     Entity[] players = new Entity[4];
     int currentPlayers = 0;
     Flag flag;
+    boolean finished = false;
 
     public Server(GamePanel gp) {
         this.gp = gp;
@@ -103,6 +104,23 @@ public class Server extends Thread{
                         if (id != players[i].ID) {
                             sendData(packet.getData(), players[i].ip, players[i].port);
                         }
+                    }
+                    break;
+                // Player scored message
+                // - expects "04 playerID"
+                // - returns "04 playerID [true=finished | false=notFinished] newFlagX newFlagY"
+                case "04":
+                    String fin = "false";
+                    id = Integer.parseInt(parseMessage[1].trim());
+                    flag.sendRandomSpot();
+                    players[id - 1].score++;
+                    if (players[id - 1].score >= 5) {
+                        fin = "true";
+                    }
+                    message = "04 " + id + " " + fin + " " + flag.x + " " + flag.y;
+                    System.out.println(message);
+                    for (int i = 0; i < currentPlayers; i++) {
+                        sendData(message.getBytes(), players[i].ip, players[i].port);
                     }
                     break;
                 default:

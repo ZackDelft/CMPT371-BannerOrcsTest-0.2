@@ -175,12 +175,18 @@ public class CollisionChecker {
 				(entityLeft < zoneRight && entityLeft > zoneLeft && entityBottom >= zoneTop && entityBottom <= zoneBottom && entity.hasFlag) ||
 				(entityRight < zoneRight && entityRight > zoneLeft && entityTop >= zoneTop && entityTop <= zoneBottom && entity.hasFlag) || 
 				(entityRight < zoneRight && entityRight > zoneLeft && entityBottom >= zoneTop && entityBottom <= zoneBottom && entity.hasFlag)) {
-			entity.score++;
+			// entity.score++;
+			// entity.hasFlag = false;
+			// gp.flag.sendRandomSpot();
+			// if (entity.score >= 5) {
+			// 	gp.finished = true;
+			// }
+
+			
 			entity.hasFlag = false;
-			gp.flag.sendRandomSpot();
-			if (entity.score >= 5) {
-				gp.finished = true;
-			}
+			gp.flag.possessed = 0;
+			client.sendFlagPossesion();
+			client.sendScoredMessage();
 		}
 	}
 	

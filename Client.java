@@ -78,6 +78,18 @@ public class Client extends Thread {
                         gp.players[id - 1].hasFlag = false;
                         gp.flag.possessed = 0;
                     }
+                    break;
+                // Server score update
+                // - expects "04 playerID [true=finished | false=notFinished] newFlagX newFlagY"
+                case "04": 
+                    id = Integer.parseInt(parsedMessage[1].trim());
+                    gp.players[id - 1].score++;
+                    gp.flag.x = Integer.parseInt(parsedMessage[3].trim());
+                    gp.flag.y = Integer.parseInt(parsedMessage[4].trim());
+                    if (parsedMessage[2].trim().equalsIgnoreCase("true")) {
+                        gp.finished = true;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -122,6 +134,10 @@ public class Client extends Thread {
 
     // Client scored message
     // - send "04 playerID"
+    public void sendScoredMessage() {
+        String message = "04 " + gp.playerControl;
+        sendMessage(message);
+    }
 
 
     // Helper function to send message
