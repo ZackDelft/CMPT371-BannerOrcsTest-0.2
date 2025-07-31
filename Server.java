@@ -91,7 +91,7 @@ public class Server extends Thread{
                 case "03":
                     id = Integer.parseInt(parseMessage[1].trim());
                     int possessed = Integer.parseInt(parseMessage[2].trim());
-                    if (possessed == 1) {
+                    if (possessed > 0) {
                         players[id - 1].hasFlag = true;
                         flag.possessed = id;
                     }

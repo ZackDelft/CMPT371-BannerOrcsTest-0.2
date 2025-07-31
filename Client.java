@@ -70,7 +70,7 @@ public class Client extends Thread {
                 case "03":
                     id = Integer.parseInt(parsedMessage[1].trim());
                     int possessed = Integer.parseInt(parsedMessage[2].trim());
-                    if (possessed == 1) {
+                    if (possessed > 0) {
                         gp.players[id - 1].hasFlag = true;
                         gp.flag.possessed = id;
                     }
