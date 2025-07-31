@@ -156,7 +156,7 @@ public class CollisionChecker {
 	}
 	
 	// Check if player scores
-	public void checkZone(Entity entity) {
+	public void checkZone(Entity entity, Client client) {
 		int zoneTop = gp.zones[entity.ID - 1].y;
 		int zoneBottom = gp.zones[entity.ID - 1].y + gp.tileSize;
 		int zoneLeft = gp.zones[entity.ID - 1].x;

@@ -127,7 +127,7 @@ public class Player extends Entity{
 		else {			
 			if (gp.playerControl == this.ID) {
 				gp.cCheck.flagChecker(this, client);
-				gp.cCheck.checkZone(this);
+				gp.cCheck.checkZone(this, client);
 			}
 			gp.cCheck.checkTile(this);
 			gp.cCheck.checkPlayers(this);

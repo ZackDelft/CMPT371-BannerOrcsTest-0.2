@@ -89,13 +89,8 @@ public class Client extends Thread {
     // - contains token "00" as signifier 
     // - server should return packet with "00" token and player ID to be used 
     public void sendConnectPacket() {
-        byte[] data = "00".getBytes();
-        DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
-        try {
-            socket.send(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String message = "00";
+        sendMessage(message);
     }
     // Client ready packet
     // - contains token "01" as signifier, data = players ready status, player ID 
@@ -109,37 +104,34 @@ public class Client extends Thread {
             message += 0 + " ";
         }
         message += gp.playerControl;
-        byte[] data = message.getBytes();
-        DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
-        try {
-            socket.send(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        sendMessage(message);
     }
     // Client send position update
     // - contains token "02" as signifier, player ID, x value, y value
     public void sendPositionUpdate(int x, int y) {
         String message = "02 " + gp.playerControl + " " + x + " " + y;
-        byte[] data = message.getBytes();
-        DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
-        try {
-            socket.send(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        sendMessage(message);
     }
 
     // Client flag pickup/drop
     // - sends "03 playerID [0=drop,1=pickup]"
     public void sendFlagPossesion() {
         String message = "03 " + gp.playerControl + " " + gp.flag.possessed;
+        sendMessage(message);
+    }
+
+    // Client scored message
+    // - send "04 playerID"
+
+
+    // Helper function to send message
+    public void sendMessage(String message) {
         byte[] data = message.getBytes();
         DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
         try {
             socket.send(packet);
         } catch (IOException e) {
             e.printStackTrace();
-        } 
+        }
     }
 }
