@@ -215,10 +215,11 @@ public class CollisionChecker {
 					
 					// gp.players[i].throwPlayer();
 					// Add throw message here
-					client.sendThrowMessage(gp.players[i].ID);
+					
 					entity.nextThrowTime = System.nanoTime() + 5000000000L; // throw again in 5 seconds
 					entity.stopThrowingAt = System.nanoTime() + 500000000L; // Stop throwing in 1 second
 					entity.throwing = true;
+					client.sendThrowMessage(gp.players[i].ID);
 				}
 			}
 		}
