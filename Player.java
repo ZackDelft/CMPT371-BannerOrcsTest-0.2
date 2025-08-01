@@ -188,10 +188,9 @@ public class Player extends Entity{
 	public void throwPlayer() {
 		if (hasFlag) {
 			gp.flag.possessed = 0;
+			gp.client.sendFlagPossesion();
 			hasFlag = false;
 		}
-		// send sendFlagPossesion()
-		gp.client.sendFlagPossesion();
 
 		isThrown = true;
 		// throw in random direction
