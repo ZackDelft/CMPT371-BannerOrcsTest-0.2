@@ -122,37 +122,49 @@ public class CollisionChecker {
 		case "up":
 			if ((gp.flag.possessed == 0 && !entity.hasFlag && entityTop <= flagBottom && entityTop >= flagTop && entityLeft >= flagLeft && entityLeft <= flagRight) ||
 					(gp.flag.possessed == 0 && !entity.hasFlag && entityTop <= flagBottom && entityTop >= flagTop && entityRight >= flagLeft && entityRight <= flagRight)) {
-				gp.flag.setHolder(entity);
-				entity.hasFlag = true;
+				if (entity.isThrown == false) {
+					gp.flag.setHolder(entity);
+					entity.hasFlag = true;
+					client.sendFlagPossesion();
+				}
 			}
 			break;
 		case "down":
 			if ((gp.flag.possessed == 0 && !entity.hasFlag && entityBottom <= flagBottom && entityBottom >= flagTop && entityLeft >= flagLeft && entityLeft <= flagRight) ||
 					(gp.flag.possessed == 0 && !entity.hasFlag && entityBottom <= flagBottom && entityBottom >= flagTop && entityRight >= flagLeft && entityRight <= flagRight)) {
-				gp.flag.setHolder(entity);
-				entity.hasFlag = true;
+				if (entity.isThrown == false) {
+					gp.flag.setHolder(entity);
+					entity.hasFlag = true;
+					client.sendFlagPossesion();
+				}
 			}
 			break;
 		case "right":
 			if ((gp.flag.possessed == 0 && !entity.hasFlag && entityRight <= flagRight && entityRight >= flagLeft && entityTop >= flagTop && entityTop <= flagBottom) ||
 					(gp.flag.possessed == 0 && !entity.hasFlag && entityRight <= flagRight && entityRight >= flagLeft && entityBottom >= flagTop && entityBottom <= flagBottom)) {
-				gp.flag.setHolder(entity);
-				entity.hasFlag = true;
+				if (entity.isThrown == false) {
+					gp.flag.setHolder(entity);
+					entity.hasFlag = true;
+					client.sendFlagPossesion();
+				}
 			}
 			break;
 		case "left":
 			if ((gp.flag.possessed == 0 && !entity.hasFlag && entityLeft <= flagRight && entityLeft >= flagLeft && entityTop >= flagTop && entityTop <= flagBottom) ||
 					(gp.flag.possessed == 0 && !entity.hasFlag && entityLeft <= flagRight && entityLeft >= flagLeft && entityBottom >= flagTop && entityBottom <= flagBottom)) {
-				gp.flag.setHolder(entity);
-				entity.hasFlag = true;
+				if (entity.isThrown == false) {
+					gp.flag.setHolder(entity);
+					entity.hasFlag = true;
+					client.sendFlagPossesion();
+				}
 			}
 			break;
 		}
-		if (entity.hasFlag == true) {
-			// send signal to server player has picked up flag
-			// Client flag pickup communication
-			client.sendFlagPossesion();
-		}
+		// if (entity.hasFlag == true) {
+		// 	// send signal to server player has picked up flag
+		// 	// Client flag pickup communication
+		// 	//client.sendFlagPossesion();
+		// }
 	}
 	
 	// Check if player scores

@@ -175,6 +175,10 @@ public class Player extends Entity{
 		if ((prevX != x || prevY != y) && gp.playerControl == ID) {
 			// Send update to server
 			client.sendPositionUpdate(x, y);
+			//gp.cCheck.flagChecker(this, client);
+			if (hasFlag == true) {
+				client.sendFlagPossesion();
+			}
 		}	
 	}
 	public void draw(Graphics2D g2) {
@@ -195,8 +199,6 @@ public class Player extends Entity{
 			hasFlag = false;
 			gp.client.sendFlagPossesion();
 		}
-		// send sendFlagPossesion()
-		
 
 		isThrown = true;
 		// throw in random direction
