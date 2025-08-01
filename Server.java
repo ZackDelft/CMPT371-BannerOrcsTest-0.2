@@ -25,7 +25,7 @@ public class Server extends Thread{
 
     public void run() {
         int id;
-        while (gp.finished != true) {
+        while (gp.finished != true) { // If server seperate change end condition - might not be doing anything
             byte[] data = new byte[1024];
             DatagramPacket packet = new DatagramPacket(data, data.length);
             try {
@@ -123,10 +123,16 @@ public class Server extends Thread{
                         sendData(message.getBytes(), players[i].ip, players[i].port);
                     }
                     break;
+                // Player throw message
+                // - expects "05 playerID"
+                // - sends "05 playerID" to player associated with ID
+                case "05":
+                    id = Integer.parseInt(parseMessage[1].trim());
+                    sendData(packet.getData(), players[id - 1].ip, players[id - 1].port);
+                    break;
                 default:
                     break;
-            }
-            
+            }   
         }
         socket.close();
     }

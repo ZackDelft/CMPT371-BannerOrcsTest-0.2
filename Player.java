@@ -82,7 +82,7 @@ public class Player extends Entity{
  		}
  		else if (keyH.spacePressed == true && ID == gp.playerControl && isThrown == false && throwing == false) {
  			if (System.nanoTime() >= nextThrowTime) {
- 				gp.cCheck.checkThrowRange(this);
+ 				gp.cCheck.checkThrowRange(this, client);
  			}
  		}
  		else if (isThrown == false && throwing == false) {
@@ -190,6 +190,9 @@ public class Player extends Entity{
 			gp.flag.possessed = 0;
 			hasFlag = false;
 		}
+		// send sendFlagPossesion()
+		gp.client.sendFlagPossesion();
+
 		isThrown = true;
 		// throw in random direction
 		int directionX = (int)(Math.random() * 3) - 1;

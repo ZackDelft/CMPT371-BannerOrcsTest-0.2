@@ -90,6 +90,13 @@ public class Client extends Thread {
                         gp.finished = true;
                     }
                     break;
+                // Server throw message
+                // - expects "05 playerID"
+                // - updates player associated with the id (should be the client)
+                case "05":
+                    id = Integer.parseInt(parsedMessage[1].trim());
+                    gp.players[id - 1].throwPlayer();
+                    break;
                 default:
                     break;
             }
@@ -136,6 +143,13 @@ public class Client extends Thread {
     // - send "04 playerID"
     public void sendScoredMessage() {
         String message = "04 " + gp.playerControl;
+        sendMessage(message);
+    }
+
+    // Client throw message
+    // - sends "05 playerID" for each player within range
+    public void sendThrowMessage(int ID) {
+        String message = "05 " + ID;
         sendMessage(message);
     }
 

@@ -191,7 +191,7 @@ public class CollisionChecker {
 	}
 	
 	// Check if within throw distance
-	public void checkThrowRange(Entity entity) {
+	public void checkThrowRange(Entity entity, Client client) {
 		
 		int entityTop = entity.y;
 		int entityBottom = entity.y + gp.tileSize;
@@ -212,7 +212,10 @@ public class CollisionChecker {
 						(entityLeft < othersRight && entityLeft > othersLeft && entityBottom >= othersTop && entityBottom <= othersBottom) ||
 						(entityRight < othersRight && entityRight > othersLeft && entityTop >= othersTop && entityTop <= othersBottom) || 
 						(entityRight < othersRight && entityRight > othersLeft && entityBottom >= othersTop && entityBottom <= othersBottom)) {
-					gp.players[i].throwPlayer();
+					
+					// gp.players[i].throwPlayer();
+					// Add throw message here
+					client.sendThrowMessage(gp.players[i].ID);
 					entity.nextThrowTime = System.nanoTime() + 5000000000L; // throw again in 5 seconds
 					entity.stopThrowingAt = System.nanoTime() + 500000000L; // Stop throwing in 1 second
 					entity.throwing = true;

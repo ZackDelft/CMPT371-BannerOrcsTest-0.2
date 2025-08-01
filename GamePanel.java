@@ -90,7 +90,7 @@ public class GamePanel extends JPanel implements Runnable{
 			server = new Server(this);
 			server.start();
 		}
-		client = new Client(this, "localhost");
+		client = new Client(this, "localhost"); // Need better way of handling IP
 		client.start();
 
 		running = true;
@@ -103,8 +103,7 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
 	// Game loop goes here
-	
-	// Delta method for FPS
+	// - Delta method for FPS
 	@Override
 	public void run() {
 		double drawInterval = 1000000000/FPS;
@@ -130,7 +129,7 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 			
 			if (timer >= 1000000000) {
-				//System.out.println("FPS: " + drawCount);
+				//System.out.println("FPS: " + drawCount); // prints fps count
 				drawCount = 0;
 				timer = 0;
 				
