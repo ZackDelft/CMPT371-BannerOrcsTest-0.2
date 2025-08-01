@@ -109,7 +109,7 @@ public class Player extends Entity{
 			if (thrownY > 0) {
 				direction = "down";
 			}
-			else if (thrownX < 0){
+			else if (thrownY < 0){
 				direction = "up";
 			}
 			else {
@@ -155,21 +155,24 @@ public class Player extends Entity{
 			}
 			// being thrown
 			else if (isThrown == true){
-				if (thrownX > 0) {
-					x += speed;
-				}
-				else if (thrownX < 0){
-					x -= speed;
-				}
-				if (thrownY > 0) {
-					y += speed;
-				}
-				else if (thrownY < 0){
-					y -= speed;
-				}
+				// if (thrownX > 0) {
+				// 	x += speed;
+				// }
+				// else if (thrownX < 0){
+				// 	x -= speed;
+				// }
+				// if (thrownY > 0) {
+				// 	y += speed;
+				// }
+				// else if (thrownY < 0){
+				// 	y -= speed;
+				// }
+
+				x += speed * thrownX;
+				y += speed * thrownY;
 			}
 		}
-		if (prevX != x || prevY != y) {
+		if ((prevX != x || prevY != y) && gp.playerControl == ID) {
 			// Send update to server
 			client.sendPositionUpdate(x, y);
 		}	
@@ -186,6 +189,7 @@ public class Player extends Entity{
 	
 	// to handle throwing players
 	public void throwPlayer() {
+		System.out.println("THROWN--------------------");
 		if (hasFlag) {
 			gp.flag.possessed = 0;
 			hasFlag = false;

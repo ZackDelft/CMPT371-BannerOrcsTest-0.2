@@ -7,7 +7,8 @@ import javax.imageio.ImageIO;
 public class StartButton {
 	Client client;
 	GamePanel gp;
-	BufferedImage startImage;
+	BufferedImage startImage1; // coloured
+	BufferedImage startImage2; // grey scale image
 	KeyHandler keyH;
 	int x, y;
 	
@@ -18,7 +19,8 @@ public class StartButton {
 		this.x = ((gp.maxScreenCol / 2) - 1) * gp.tileSize;
 		this.y = (((gp.maxScreenCol / 2)) * gp.tileSize) - (gp.tileSize/2);
 		try {
-			startImage = ImageIO.read(getClass().getResourceAsStream("/res/ui/startButton.png"));
+			startImage1 = ImageIO.read(getClass().getResourceAsStream("/res/ui/startButton.png"));
+			startImage2 = ImageIO.read(getClass().getResourceAsStream("/res/ui/startButton2.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -39,7 +41,12 @@ public class StartButton {
 	
 	public void draw(Graphics2D g2) {
 		BufferedImage image = null;
-		image = startImage;
+		if (gp.ready == false) {
+			image = startImage2;
+		}
+		else {
+			image = startImage1;
+		}
 		g2.drawImage(image, x, y, gp.tileSize*2, gp.tileSize, null);
 	}
 }
