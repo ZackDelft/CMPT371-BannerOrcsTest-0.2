@@ -2,15 +2,18 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.InetAddress;
 
 import javax.imageio.ImageIO;
 
 public class Player extends Entity{
 	GamePanel gp;
 	KeyHandler keyH;
-	public Player(GamePanel gp, KeyHandler keyH, int ID) {
+	public Player(GamePanel gp, KeyHandler keyH, int ID, InetAddress ip, int port) {
 		this.gp = gp;
 		this.keyH = keyH;
+		this.ip = ip;
+		this.port = port;
 		
 		// hit-box
 		hitbox = new Rectangle(6, 15, 36, 33);
@@ -64,7 +67,9 @@ public class Player extends Entity{
 			e.printStackTrace();
 		}
 	}
- 	public void update() {
+ 	public void update(Client client) {
+		int prevX = x;
+		int prevY = y;
  		if (isThrown == true) {
  			if (noLongerThrownAt <= System.nanoTime()) {
  				isThrown = false;
@@ -75,22 +80,22 @@ public class Player extends Entity{
  				throwing = false;
  			}
  		}
- 		else if (keyH.spacePressed == true && ID == keyH.playerControl && isThrown == false && throwing == false) {
+ 		else if (keyH.spacePressed == true && ID == gp.playerControl && isThrown == false && throwing == false) {
  			if (System.nanoTime() >= nextThrowTime) {
- 				gp.cCheck.checkThrowRange(this);
+ 				gp.cCheck.checkThrowRange(this, client);
  			}
  		}
  		else if (isThrown == false && throwing == false) {
-			if (keyH.upPressed == true && ID == keyH.playerControl) {
+			if (keyH.upPressed == true && ID == gp.playerControl) {
 				direction = "up";
 			}
-			else if (keyH.downPressed == true && ID == keyH.playerControl) {
+			else if (keyH.downPressed == true && ID == gp.playerControl) {
 				direction = "down";
 			}
-			else if (keyH.leftPressed == true && ID == keyH.playerControl) {
+			else if (keyH.leftPressed == true && ID == gp.playerControl) {
 				direction = "left";
 			}
-			else if (keyH.rightPressed == true && ID == keyH.playerControl) {
+			else if (keyH.rightPressed == true && ID == gp.playerControl) {
 				direction = "right";
 			}
 			else {
@@ -104,7 +109,7 @@ public class Player extends Entity{
 			if (thrownY > 0) {
 				direction = "down";
 			}
-			else if (thrownX < 0){
+			else if (thrownY < 0){
 				direction = "up";
 			}
 			else {
@@ -119,9 +124,11 @@ public class Player extends Entity{
 			}
 			gp.cCheck.checkTile(this);
 		}
-		else {
-			gp.cCheck.flagChecker(this);
-			gp.cCheck.checkZone(this);
+		else {			
+			if (gp.playerControl == this.ID) {
+				gp.cCheck.flagChecker(this, client);
+				gp.cCheck.checkZone(this, client);
+			}
 			gp.cCheck.checkTile(this);
 			gp.cCheck.checkPlayers(this);
 		}
@@ -148,20 +155,31 @@ public class Player extends Entity{
 			}
 			// being thrown
 			else if (isThrown == true){
-				if (thrownX > 0) {
-					x += speed;
-				}
-				else if (thrownX < 0){
-					x -= speed;
-				}
-				if (thrownY > 0) {
-					y += speed;
-				}
-				else if (thrownY < 0){
-					y -= speed;
-				}
+				// if (thrownX > 0) {
+				// 	x += speed;
+				// }
+				// else if (thrownX < 0){
+				// 	x -= speed;
+				// }
+				// if (thrownY > 0) {
+				// 	y += speed;
+				// }
+				// else if (thrownY < 0){
+				// 	y -= speed;
+				// }
+
+				x += speed * thrownX;
+				y += speed * thrownY;
 			}
 		}
+		if ((prevX != x || prevY != y) && gp.playerControl == ID) {
+			// Send update to server
+			client.sendPositionUpdate(x, y);
+			//gp.cCheck.flagChecker(this, client);
+			if (hasFlag == true) {
+				client.sendFlagPossesion();
+			}
+		}	
 	}
 	public void draw(Graphics2D g2) {
 		/*
@@ -175,10 +193,13 @@ public class Player extends Entity{
 	
 	// to handle throwing players
 	public void throwPlayer() {
+		System.out.println("THROWN--------------------");
 		if (hasFlag) {
 			gp.flag.possessed = 0;
 			hasFlag = false;
+			gp.client.sendFlagPossesion();
 		}
+
 		isThrown = true;
 		// throw in random direction
 		int directionX = (int)(Math.random() * 3) - 1;

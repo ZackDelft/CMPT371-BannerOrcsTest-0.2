@@ -4,7 +4,7 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements KeyListener{
 	
 	public boolean upPressed, downPressed, leftPressed, rightPressed, spacePressed, enterPressed;
-	public int playerControl = 1;
+	// public int playerControl = 1;
 
 	// UNUSED
 	@Override
@@ -37,19 +37,7 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_W) {
 			upPressed = true;
 		}
-		// change player
-		if (code == KeyEvent.VK_1) {
-			playerControl = 1;
-		}
-		if (code == KeyEvent.VK_2) {
-			playerControl = 2;
-		}
-		if (code == KeyEvent.VK_3) {
-			playerControl = 3;
-		}
-		if (code == KeyEvent.VK_4) {
-			playerControl = 4;
-		}
+		
 		// throw in-range players
 		if (code == KeyEvent.VK_SPACE) {
 			spacePressed = true;

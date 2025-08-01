@@ -3,7 +3,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 // import ScoreZone.ScoreZone;
@@ -18,14 +21,18 @@ public class GamePanel extends JPanel implements Runnable{
 	final int originalTileSize = 16; // 16x16 tile
 	final int scale = 3; // tile scale factor
 	public final int tileSize = originalTileSize * scale; // final tile size (48x48)
-	public final int maxScreenCol = 18;
-	final int maxScreenRow = 18;
+	public final int maxScreenCol = 16;
+	final int maxScreenRow = 16;
 	public final int screenWidth = tileSize * maxScreenCol;
 	final int screenHeight = tileSize * maxScreenRow;
 	
+	public boolean ready = false;
+	public boolean prevReady = false;
 	public boolean started = false;
 	public boolean finished = false;
 	public boolean playersSorted = false;
+
+	public boolean running = false;
 	
 	// FPS
 	int FPS = 60;
@@ -34,7 +41,7 @@ public class GamePanel extends JPanel implements Runnable{
 	// instantiate keyhandler 
 	KeyHandler keyH = new KeyHandler();
 	// Create the game thread
-	Thread gameThread; // auto calls run()
+	public Thread gameThread; // auto calls run()
 	// collision handler
 	public CollisionChecker cCheck = new CollisionChecker(this);
 	// initiate score zones
@@ -47,6 +54,11 @@ public class GamePanel extends JPanel implements Runnable{
 	StartButton startB;
 	ScoreBoard scoreB;
 	
+	// client server initialization
+	public Client client;
+	private Server server;
+
+	public int playerControl = 0;
 
 		
 	public GamePanel () {
@@ -55,23 +67,43 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
+
+		InetAddress dummyAddress = null;
+		// try {
+		// 	dummyAddress = InetAddress.getByName("localhost");
+		// } catch (UnknownHostException e) {
+		// 	e.printStackTrace();
+		// }
 		
 		startB = new StartButton(this, keyH);
 		for (int i = 0; i < this.players.length; i++) {
-			this.players[i] = new Player(this, keyH, i+1);
+			this.players[i] = new Player(this, keyH, i+1, dummyAddress, -1);
 			this.zones[i] = new ScoreZone(this, i+1);
 		}
 		scoreB = new ScoreBoard(this);
 	}
 
-	public void startGameThread() {
+	public synchronized void startGameThread() {
+		
+
+		if (JOptionPane.showConfirmDialog(this, "Do you want to run the server") == 0) {
+			server = new Server(this);
+			server.start();
+		}
+		client = new Client(this, "localhost"); // Need better way of handling IP
+		client.start();
+
+		running = true;
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
+
+	public synchronized void stop() {
+		running = false;
+	}
 	
 	// Game loop goes here
-	
-	// Delta method for FPS
+	// - Delta method for FPS
 	@Override
 	public void run() {
 		double drawInterval = 1000000000/FPS;
@@ -80,9 +112,10 @@ public class GamePanel extends JPanel implements Runnable{
 		long currentTime;
 		long timer = 0;
 		int drawCount = 0;
+
+		client.sendConnectPacket();
 		
 		while(gameThread != null) {
-			
 			currentTime = System.nanoTime();
 			delta += (currentTime - lastTime) / drawInterval;
 			timer += (currentTime - lastTime);
@@ -96,20 +129,23 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 			
 			if (timer >= 1000000000) {
-				System.out.println("FPS: " + drawCount);
+				//System.out.println("FPS: " + drawCount); // prints fps count
 				drawCount = 0;
 				timer = 0;
+				
+				
 			}
 		}
 	}
 	
 	public void update() {
 		if (started == false && finished == false) {
-			startB.update();
+			startB.update(client);
+
 		}
 		else if (started == true && finished == false) {
 			for (int i = 0; i < players.length; i++) {
-				players[i].update();
+				players[i].update(client);
 				zones[i].update();
 			}
 		}

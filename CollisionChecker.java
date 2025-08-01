@@ -14,9 +14,9 @@ public class CollisionChecker {
 		int entityBottom = entity.y + entity.hitbox.y + entity.hitbox.height;
 		
 		int entityLeftCol = entityLeft / gp.tileSize;
-		int entityRightCol = entityRight / gp.tileSize;
+		int entityRightCol = (entityRight - 1) / gp.tileSize;
 		int entityTopRow = entityTop / gp.tileSize;
-		int entityBottomRow = entityBottom / gp.tileSize;
+		int entityBottomRow = (entityBottom - 1) / gp.tileSize;
 		
 		int tileNum1, tileNum2;
 		
@@ -106,7 +106,7 @@ public class CollisionChecker {
 	}
 	
 	// Check if player touched flag
-	public void flagChecker(Entity entity) {
+	public void flagChecker(Entity entity, Client client) {
 		
 		int flagTop = gp.flag.y;
 		int flagBottom = gp.flag.y + gp.tileSize;
@@ -122,36 +122,53 @@ public class CollisionChecker {
 		case "up":
 			if ((gp.flag.possessed == 0 && !entity.hasFlag && entityTop <= flagBottom && entityTop >= flagTop && entityLeft >= flagLeft && entityLeft <= flagRight) ||
 					(gp.flag.possessed == 0 && !entity.hasFlag && entityTop <= flagBottom && entityTop >= flagTop && entityRight >= flagLeft && entityRight <= flagRight)) {
-				gp.flag.setHolder(entity);
-				entity.hasFlag = true;
+				if (entity.isThrown == false) {
+					gp.flag.setHolder(entity);
+					entity.hasFlag = true;
+					client.sendFlagPossesion();
+				}
 			}
 			break;
 		case "down":
 			if ((gp.flag.possessed == 0 && !entity.hasFlag && entityBottom <= flagBottom && entityBottom >= flagTop && entityLeft >= flagLeft && entityLeft <= flagRight) ||
 					(gp.flag.possessed == 0 && !entity.hasFlag && entityBottom <= flagBottom && entityBottom >= flagTop && entityRight >= flagLeft && entityRight <= flagRight)) {
-				gp.flag.setHolder(entity);
-				entity.hasFlag = true;
+				if (entity.isThrown == false) {
+					gp.flag.setHolder(entity);
+					entity.hasFlag = true;
+					client.sendFlagPossesion();
+				}
 			}
 			break;
 		case "right":
 			if ((gp.flag.possessed == 0 && !entity.hasFlag && entityRight <= flagRight && entityRight >= flagLeft && entityTop >= flagTop && entityTop <= flagBottom) ||
 					(gp.flag.possessed == 0 && !entity.hasFlag && entityRight <= flagRight && entityRight >= flagLeft && entityBottom >= flagTop && entityBottom <= flagBottom)) {
-				gp.flag.setHolder(entity);
-				entity.hasFlag = true;
+				if (entity.isThrown == false) {
+					gp.flag.setHolder(entity);
+					entity.hasFlag = true;
+					client.sendFlagPossesion();
+				}
 			}
 			break;
 		case "left":
 			if ((gp.flag.possessed == 0 && !entity.hasFlag && entityLeft <= flagRight && entityLeft >= flagLeft && entityTop >= flagTop && entityTop <= flagBottom) ||
 					(gp.flag.possessed == 0 && !entity.hasFlag && entityLeft <= flagRight && entityLeft >= flagLeft && entityBottom >= flagTop && entityBottom <= flagBottom)) {
-				gp.flag.setHolder(entity);
-				entity.hasFlag = true;
+				if (entity.isThrown == false) {
+					gp.flag.setHolder(entity);
+					entity.hasFlag = true;
+					client.sendFlagPossesion();
+				}
 			}
 			break;
 		}
+		// if (entity.hasFlag == true) {
+		// 	// send signal to server player has picked up flag
+		// 	// Client flag pickup communication
+		// 	//client.sendFlagPossesion();
+		// }
 	}
 	
 	// Check if player scores
-	public void checkZone(Entity entity) {
+	public void checkZone(Entity entity, Client client) {
 		int zoneTop = gp.zones[entity.ID - 1].y;
 		int zoneBottom = gp.zones[entity.ID - 1].y + gp.tileSize;
 		int zoneLeft = gp.zones[entity.ID - 1].x;
@@ -170,17 +187,23 @@ public class CollisionChecker {
 				(entityLeft < zoneRight && entityLeft > zoneLeft && entityBottom >= zoneTop && entityBottom <= zoneBottom && entity.hasFlag) ||
 				(entityRight < zoneRight && entityRight > zoneLeft && entityTop >= zoneTop && entityTop <= zoneBottom && entity.hasFlag) || 
 				(entityRight < zoneRight && entityRight > zoneLeft && entityBottom >= zoneTop && entityBottom <= zoneBottom && entity.hasFlag)) {
-			entity.score++;
+			// entity.score++;
+			// entity.hasFlag = false;
+			// gp.flag.sendRandomSpot();
+			// if (entity.score >= 5) {
+			// 	gp.finished = true;
+			// }
+
+			
 			entity.hasFlag = false;
-			gp.flag.sendRandomSpot();
-			if (entity.score >= 5) {
-				gp.finished = true;
-			}
+			gp.flag.possessed = 0;
+			client.sendFlagPossesion();
+			client.sendScoredMessage();
 		}
 	}
 	
 	// Check if within throw distance
-	public void checkThrowRange(Entity entity) {
+	public void checkThrowRange(Entity entity, Client client) {
 		
 		int entityTop = entity.y;
 		int entityBottom = entity.y + gp.tileSize;
@@ -201,10 +224,14 @@ public class CollisionChecker {
 						(entityLeft < othersRight && entityLeft > othersLeft && entityBottom >= othersTop && entityBottom <= othersBottom) ||
 						(entityRight < othersRight && entityRight > othersLeft && entityTop >= othersTop && entityTop <= othersBottom) || 
 						(entityRight < othersRight && entityRight > othersLeft && entityBottom >= othersTop && entityBottom <= othersBottom)) {
-					gp.players[i].throwPlayer();
+					
+					// gp.players[i].throwPlayer();
+					// Add throw message here
+					
 					entity.nextThrowTime = System.nanoTime() + 5000000000L; // throw again in 5 seconds
 					entity.stopThrowingAt = System.nanoTime() + 500000000L; // Stop throwing in 1 second
 					entity.throwing = true;
+					client.sendThrowMessage(gp.players[i].ID);
 				}
 			}
 		}
