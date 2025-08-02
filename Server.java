@@ -12,12 +12,14 @@ public class Server extends Thread{
     int currentPlayers = 0;
     Flag flag;
     boolean finished = false;
+    int port; // = 53333;
 
-    public Server(GamePanel gp) {
+    public Server(GamePanel gp, int port) {
         this.gp = gp;
+        this.port = port;
         flag = new Flag(gp);
         try {
-            this.socket = new DatagramSocket(53333);
+            this.socket = new DatagramSocket(port);
         } catch (SocketException e) {
             e.printStackTrace();
         }

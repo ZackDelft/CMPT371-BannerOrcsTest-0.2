@@ -9,10 +9,11 @@ public class Client extends Thread {
     private InetAddress ip;
     private DatagramSocket socket;
     private GamePanel gp;
-    private int port = 53333;
+    private int port; // = 53333;
 
-    public Client(GamePanel gp, String ip) {
+    public Client(GamePanel gp, String ip, int port) {
         this.gp = gp;
+        this.port = port;
         try {
             this.socket = new DatagramSocket();
             this.ip = InetAddress.getByName(ip);
