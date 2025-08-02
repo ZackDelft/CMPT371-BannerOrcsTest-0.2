@@ -26,11 +26,11 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int screenWidth = tileSize * maxScreenCol;
 	final int screenHeight = tileSize * maxScreenRow;
 	
-	public boolean ready = false;
-	public boolean prevReady = false;
-	public boolean started = false;
-	public boolean finished = false;
-	public boolean playersSorted = false;
+	public boolean ready = false; // player ready status
+	public boolean prevReady = false; // for comparison used to see if server message is needed
+	public boolean started = false; // game started state
+	public boolean finished = false; // game finished state
+	public boolean playersSorted = false; // used to sort players by score once (render will call everytime otherwise)
 
 	public boolean running = false;
 	
@@ -57,9 +57,9 @@ public class GamePanel extends JPanel implements Runnable{
 	// client server initialization
 	public Client client;
 	private Server server;
-
-	public int playerControl = 0;
-
+	public int playerControl = 0; // server tells client which player to control through this variable
+	int port = -1;
+	String serverIP = "localhost";
 		
 	public GamePanel () {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -86,11 +86,16 @@ public class GamePanel extends JPanel implements Runnable{
 	public synchronized void startGameThread() {
 		
 
-		if (JOptionPane.showConfirmDialog(this, "Do you want to run the server") == 0) {
-			server = new Server(this);
+		if (JOptionPane.showConfirmDialog(this, "Do you want to run the server on this machine") == 0) {
+			port = Integer.parseInt(JOptionPane.showInputDialog("Please enter the port number you would like the server to run on").trim()); 
+			server = new Server(this, port);
 			server.start();
 		}
-		client = new Client(this, "localhost"); // Need better way of handling IP
+		if (port == -1) {
+			serverIP = JOptionPane.showInputDialog("Please enter the IP address of the game server");
+			port = Integer.parseInt(JOptionPane.showInputDialog("Please enter the port number to connect to on the server").trim());
+		}
+		client = new Client(this, serverIP, port); // Need better way of handling IP
 		client.start();
 
 		running = true;
