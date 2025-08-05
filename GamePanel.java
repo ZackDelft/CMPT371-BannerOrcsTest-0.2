@@ -160,6 +160,8 @@ public class GamePanel extends JPanel implements Runnable{
 				// if (System.nanoTime() > connectionTimeOut) {
 				// 	connected2server = false;
 				// }
+				
+				// Inital connection timeout
 				if (connected2server == false && System.nanoTime() > connectionTimeOut) {
 					timedout = true;
 				}

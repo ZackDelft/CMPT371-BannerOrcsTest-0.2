@@ -3,18 +3,17 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.net.InetAddress;
 
-import javax.print.DocFlavor.STRING;
-
 public class Entity {
 	public int ID;
 	public int x, y;
 	public int speed;
 	public int score;
 
+	// Server variables
 	public boolean ready = false; // for server communication
 	public InetAddress ip; // used by server 
 	public int port; // used by server
-	public long lastTimeUpdated = -1; // used by server to control return messages of its own position
+	public long lastTimeUpdated = -1; // used by server to control client server connected message so they don't time out
 	
 	// for image
 	public BufferedImage characterImage;

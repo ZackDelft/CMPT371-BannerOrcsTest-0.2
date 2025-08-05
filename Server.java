@@ -75,6 +75,7 @@ public class Server extends Thread{
                     message = "07 " + readyPlayers;
                     for (int i = 0; i < currentPlayers; i++) {
                         sendData(message.getBytes(), players[i].ip, players[i].port);
+                        players[i].lastTimeUpdated = System.nanoTime();
                     }
                     if (currentPlayers == players.length) {
                         if (allReady(players) == true) {
@@ -98,6 +99,7 @@ public class Server extends Thread{
                     for (int i = 0; i < currentPlayers; i++) {
                         if (id != players[i].ID) {
                             sendData(packet.getData(), players[i].ip, players[i].port);
+                            players[i].lastTimeUpdated = System.nanoTime();
                         }
                     }
                     break;
@@ -118,6 +120,7 @@ public class Server extends Thread{
                     for (int i = 0; i < currentPlayers; i++) {
                         if (id != players[i].ID) {
                             sendData(packet.getData(), players[i].ip, players[i].port);
+                            players[i].lastTimeUpdated = System.nanoTime();
                         }
                     }
                     break;
@@ -136,6 +139,7 @@ public class Server extends Thread{
                     System.out.println(message);
                     for (int i = 0; i < currentPlayers; i++) {
                         sendData(message.getBytes(), players[i].ip, players[i].port);
+                        players[i].lastTimeUpdated = System.nanoTime();
                     }
                     break;
                 // Player throw message
@@ -144,10 +148,21 @@ public class Server extends Thread{
                 case "05":
                     id = Integer.parseInt(parseMessage[1].trim());
                     sendData(packet.getData(), players[id - 1].ip, players[id - 1].port);
+                    players[id - 1].lastTimeUpdated = System.nanoTime();
                     break;
                 default:
                     break;
-            }   
+            }
+            // Send connection lives signals to players who needs it
+            // - if player hasn't recieved message in 5 sec, sends message containing "08"
+            // ------- Needs seperate thread
+            // for (int i = 0; i < currentPlayers; i++) {
+            //     if (players[i].lastTimeUpdated + (5 * gp.oneSec) < System.nanoTime()) {
+            //         message = "08";
+            //         sendData(message.getBytes(), players[i].ip, players[i].port);
+            //         players[i].lastTimeUpdated = System.nanoTime();
+            //     }
+            // }   
         }
         System.out.println("closing server socket");
         socket.close();
