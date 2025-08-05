@@ -1,17 +1,20 @@
 import java.util.Arrays;
 import java.util.Comparator;
-
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 
 public class ScoreBoard {
 	GamePanel gp;
 	BufferedImage[] crowns;
 	BufferedImage pi, pii, piii, piv;
 	int firstCrownX, firstCrownY;
+	Font font = new Font("Ariel", Font.CENTER_BASELINE, 20);
 	
 	public ScoreBoard(GamePanel gp) {
 		this.gp = gp;
@@ -26,14 +29,21 @@ public class ScoreBoard {
 			crowns[0] = ImageIO.read(getClass().getResourceAsStream("/res/ui/1st.png"));
 			crowns[1] = ImageIO.read(getClass().getResourceAsStream("/res/ui/2nd.png"));
 			crowns[2] = ImageIO.read(getClass().getResourceAsStream("/res/ui/3rd.png"));
-			crowns[3] = ImageIO.read(getClass().getResourceAsStream("/res/ui/4th"
-					+ ".png"));
+			crowns[3] = ImageIO.read(getClass().getResourceAsStream("/res/ui/4th.png"));
 			pi = ImageIO.read(getClass().getResourceAsStream("/res/ui/p1.png"));
 			pii = ImageIO.read(getClass().getResourceAsStream("/res/ui/p2.png"));
 			piii = ImageIO.read(getClass().getResourceAsStream("/res/ui/p3.png"));
 			piv = ImageIO.read(getClass().getResourceAsStream("/res/ui/p4.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void update(JFrame window) {
+		if (gp.keyH.enterPressed == true) {
+			System.out.println("enter-pressed");
+			gp.running = false;
+			//System.exit(0);
 		}
 	}
 	
@@ -59,5 +69,8 @@ public class ScoreBoard {
 				break;
 			}
 		}
+		g2.setColor(Color.WHITE);
+		g2.setFont(font);
+		g2.drawString("Press 'enter' to quit", ((gp.maxScreenCol / 2) - 2) * gp.tileSize, firstCrownY + (5 * gp.tileSize));
 	}
 }

@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -32,7 +33,9 @@ public class GamePanel extends JPanel implements Runnable{
 	public boolean finished = false; // game finished state
 	public boolean playersSorted = false; // used to sort players by score once (render will call everytime otherwise)
 
-	public boolean running = false;
+	public boolean running;
+
+	JFrame window;
 	
 	// FPS
 	int FPS = 60;
@@ -60,8 +63,10 @@ public class GamePanel extends JPanel implements Runnable{
 	public int playerControl = 0; // server tells client which player to control through this variable
 	int port = -1;
 	String serverIP = "localhost";
+	int connectedPlayers = 0;
+	int readyPlayers = 0;
 		
-	public GamePanel () {
+	public GamePanel (JFrame window) {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.black);
 		this.setDoubleBuffered(true);
@@ -69,11 +74,7 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setFocusable(true);
 
 		InetAddress dummyAddress = null;
-		// try {
-		// 	dummyAddress = InetAddress.getByName("localhost");
-		// } catch (UnknownHostException e) {
-		// 	e.printStackTrace();
-		// }
+		this.window = window;
 		
 		startB = new StartButton(this, keyH);
 		for (int i = 0; i < this.players.length; i++) {
@@ -120,7 +121,7 @@ public class GamePanel extends JPanel implements Runnable{
 
 		client.sendConnectPacket();
 		
-		while(gameThread != null) {
+		while(running == true) {
 			currentTime = System.nanoTime();
 			delta += (currentTime - lastTime) / drawInterval;
 			timer += (currentTime - lastTime);
@@ -141,6 +142,8 @@ public class GamePanel extends JPanel implements Runnable{
 				
 			}
 		}
+
+		System.exit(0);
 	}
 	
 	public void update() {
@@ -155,7 +158,7 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 		}
 		else if (started == true && finished == true) {
-			
+			scoreB.update(window);
 		}
 	}
 	

@@ -10,6 +10,7 @@ public class Server extends Thread{
     private GamePanel gp;
     Entity[] players = new Entity[4];
     int currentPlayers = 0;
+    int readyPlayers = 0;
     Flag flag;
     boolean finished = false;
     int port; // = 53333;
@@ -41,7 +42,8 @@ public class Server extends Thread{
             switch (parseMessage[0].trim()) {
                 // connection message
                 // - expects "00" from client
-                // - returns "00 playerID"
+                // - returns "00 playerID" to player that connected
+                // - forwards updated connected player count via "06 numPlayersConnected" to all players
                 case "00":
                     if (currentPlayers < players.length) {
                         int ID = currentPlayers + 1;
@@ -49,19 +51,30 @@ public class Server extends Thread{
                         players[currentPlayers] = new Player(gp, null, ID, packet.getAddress(), packet.getPort());
                         sendData(message.getBytes(), packet.getAddress(), packet.getPort());
                         currentPlayers++;
+                        message = "06 " + currentPlayers;
+                        for (int i = 0; i < currentPlayers; i++) {
+                            sendData(message.getBytes(), players[i].ip, players[i].port);
+                        }
                     }
                     break;
                 // ready message
                 // - expects "01 readyStatus playerID"
                 // - returns "01 start" if all 4 players ready
+                // - else sends "07 numPlayersReady" to all players
                 // - should rearange order of ID and readyStatus
                 case "01":
                     id = Integer.parseInt(parseMessage[2].trim());
                     if (parseMessage[1].trim().equalsIgnoreCase("1")) {
                         players[id - 1].ready = true;
+                        readyPlayers++;
                     }
                     else {
                         players[id - 1].ready = false;
+                        readyPlayers--;
+                    }
+                    message = "07 " + readyPlayers;
+                    for (int i = 0; i < currentPlayers; i++) {
+                        sendData(message.getBytes(), players[i].ip, players[i].port);
                     }
                     if (currentPlayers == players.length) {
                         if (allReady(players) == true) {
@@ -70,7 +83,7 @@ public class Server extends Thread{
                                 players[i].lastTimeUpdated = System.nanoTime();
                                 sendData(message.getBytes(), players[i].ip, players[i].port);                                
                             }
-                        }                       
+                        }                     
                     }
                     break;
                 // Player position update message
@@ -136,6 +149,7 @@ public class Server extends Thread{
                     break;
             }   
         }
+        System.out.println("closing server socket");
         socket.close();
     }
 

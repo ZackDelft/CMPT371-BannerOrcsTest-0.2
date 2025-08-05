@@ -45,6 +45,7 @@ public class Client extends Thread {
                 // - expects "00 playerIDtoUse"
                 case "00":
                     gp.playerControl = Integer.parseInt(parsedMessage[1].trim());
+                    gp.connectedPlayers++;
                     break;
                 // Server start game message
                 // - expects "01 start"
@@ -98,10 +99,23 @@ public class Client extends Thread {
                     id = Integer.parseInt(parsedMessage[1].trim());
                     gp.players[id - 1].throwPlayer();
                     break;
+                // Server number of players connected message
+                // - expects "06 numPlayersConnected"
+                // - updates Start screen
+                case "06":
+                    gp.connectedPlayers = Integer.parseInt(parsedMessage[1].trim());
+                    break;
+                // Server number of players ready message
+                // - expects "07 numPlayersReady"
+                // - updates Start screen
+                case "07":
+                    gp.readyPlayers = Integer.parseInt(parsedMessage[1].trim());
+                    break;
                 default:
                     break;
             }
         }
+        System.out.println("closing client socket");
         socket.close();
     }
 

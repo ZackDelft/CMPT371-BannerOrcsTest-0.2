@@ -1,3 +1,5 @@
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -11,6 +13,7 @@ public class StartButton {
 	BufferedImage startImage2; // grey scale image
 	KeyHandler keyH;
 	int x, y;
+	Font font = new Font("Ariel", Font.CENTER_BASELINE, 20);
 	
 	public StartButton(GamePanel gp, KeyHandler keyH) {
 		this.gp = gp;
@@ -48,5 +51,9 @@ public class StartButton {
 			image = startImage1;
 		}
 		g2.drawImage(image, x, y, gp.tileSize*2, gp.tileSize, null);
+		g2.setColor(Color.WHITE);
+		g2.setFont(font);
+		g2.drawString("Connected Players: " + gp.connectedPlayers, gp.tileSize/2, gp.tileSize);
+		g2.drawString("Ready Players: " + gp.readyPlayers, gp.tileSize/2, gp.tileSize + 25);
 	}
 }
