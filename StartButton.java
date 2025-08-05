@@ -13,7 +13,7 @@ public class StartButton {
 	BufferedImage startImage2; // grey scale image
 	KeyHandler keyH;
 	int x, y;
-	Font font = new Font("Ariel", Font.CENTER_BASELINE, 20);
+	
 	
 	public StartButton(GamePanel gp, KeyHandler keyH) {
 		this.gp = gp;
@@ -30,7 +30,7 @@ public class StartButton {
 	}
 	
 	public void update(Client client) {
-		if (keyH.enterPressed == true) {
+		if (keyH.enterPressed == true && gp.timedout == false) {
 			if (gp.ready == false) {
 				gp.ready = true;
 			}
@@ -52,7 +52,7 @@ public class StartButton {
 		}
 		g2.drawImage(image, x, y, gp.tileSize*2, gp.tileSize, null);
 		g2.setColor(Color.WHITE);
-		g2.setFont(font);
+		g2.setFont(gp.font);
 		g2.drawString("Connected Players: " + gp.connectedPlayers, gp.tileSize/2, gp.tileSize/2);
 		g2.drawString("Ready Players: " + gp.readyPlayers, gp.tileSize/2, gp.tileSize/2 + 25);
 	}

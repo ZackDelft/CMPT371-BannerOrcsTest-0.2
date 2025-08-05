@@ -1,6 +1,7 @@
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.net.InetAddress;
@@ -56,6 +57,8 @@ public class GamePanel extends JPanel implements Runnable{
 	// Start button
 	StartButton startB;
 	ScoreBoard scoreB;
+
+	public Font font = new Font("Ariel", Font.CENTER_BASELINE, 20);
 	
 	// client server initialization
 	public Client client;
@@ -65,10 +68,14 @@ public class GamePanel extends JPanel implements Runnable{
 	String serverIP = "localhost";
 	int connectedPlayers = 0;
 	int readyPlayers = 0;
+	// Connection timeout variables for client
 	boolean connected2server = false;
-	long connectionMessageSentTime;
-	long connectionTimeOut;
-	long oneSec = 1000000000;
+	boolean timedout = false;
+	long connectionMessageSentTime; // Used for initial connection timeout
+	long lastServerMessageTime;
+	long connectionTimeOut; // used for client timeouts
+	long oneSec = 1000000000; // nanosec in 1 sec
+
 		
 	public GamePanel (JFrame window) {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -99,16 +106,6 @@ public class GamePanel extends JPanel implements Runnable{
 		if (port == -1) {
 			serverIP = JOptionPane.showInputDialog("Please enter the IP address of the game server");
 			goodPort();
-			// boolean goodPort = false;
-			// while (goodPort == false) {
-			// 	try {
-			// 		port = Integer.parseInt(JOptionPane.showInputDialog("Please enter the port number to connect to on the server").trim());
-			// 		if (port >= 49152 && port <= 65535) {
-			// 			goodPort = true;
-			// 		}
-			// 	} catch (Exception e) {
-			// 	}
-			// }
 			
 		}
 		client = new Client(this, serverIP, port); // Need better way of handling IP
@@ -160,9 +157,11 @@ public class GamePanel extends JPanel implements Runnable{
 			
 			if (delta >= 1) {
 				// Check for connection timeout
+				// if (System.nanoTime() > connectionTimeOut) {
+				// 	connected2server = false;
+				// }
 				if (connected2server == false && System.nanoTime() > connectionTimeOut) {
-					started = true;
-					finished = true;
+					timedout = true;
 				}
 				update();
 				repaint();
@@ -183,7 +182,7 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
 	public void update() {
-		if (started == false && finished == false) {
+		if (started == false && finished == false && timedout == false) {
 			startB.update(client);
 
 		}
@@ -196,6 +195,11 @@ public class GamePanel extends JPanel implements Runnable{
 		else if (started == true && finished == true) {
 			scoreB.update(window);
 		}
+		else if (timedout == true) {
+			if (keyH.enterPressed == true) {
+				running = false;
+			}
+		}
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -205,10 +209,10 @@ public class GamePanel extends JPanel implements Runnable{
 		// Background layer
 		tileM.draw(g2);
 		
-		if (started == false && finished == false) {
+		if (started == false && finished == false && timedout == false) {
 			startB.draw(g2);
 		}
-		else if (started == true && finished == false) {
+		else if (started == true && finished == false && timedout == false) {
 		
 			for (int i = 0; i < zones.length; i++){
 				zones[i].draw(g2);
@@ -220,8 +224,14 @@ public class GamePanel extends JPanel implements Runnable{
 				players[i].draw(g2);
 			}	
 		}
-		else if (started == true && finished == true) {
+		else if (started == true && finished == true && timedout == false) {
 			scoreB.draw(g2);
+		}
+		else if (timedout == true) {
+			g2.setColor(Color.WHITE);
+			g2.setFont(font);
+			g2.drawString("Lost connection to server", (((maxScreenCol / 2) - 2) * tileSize) - (tileSize/2), ((maxScreenCol / 2) * tileSize));
+			g2.drawString("Press 'enter' to quit", (((maxScreenCol / 2) - 2) * tileSize) - (tileSize/2), ((maxScreenCol / 2) * tileSize) + 25);
 		}
 		
 		g2.dispose();

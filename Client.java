@@ -5,6 +5,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import javax.swing.JOptionPane;
+
 public class Client extends Thread {
     private InetAddress ip;
     private DatagramSocket socket;
@@ -14,13 +16,22 @@ public class Client extends Thread {
     public Client(GamePanel gp, String ip, int port) {
         this.gp = gp;
         this.port = port;
+        boolean goodIP = false;
         try {
             this.socket = new DatagramSocket();
             this.ip = InetAddress.getByName(ip);
+            goodIP = true;
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            while (goodIP == false) {
+                ip = JOptionPane.showInputDialog("Please enter the IP address of the game server");
+                try {
+                    this.ip = InetAddress.getByName(ip);
+                    goodIP = true;
+                } catch (UnknownHostException e1) {
+                }
+            }
         }
     }
 
