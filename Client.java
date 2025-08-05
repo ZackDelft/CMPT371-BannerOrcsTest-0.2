@@ -46,6 +46,7 @@ public class Client extends Thread {
                 case "00":
                     gp.playerControl = Integer.parseInt(parsedMessage[1].trim());
                     gp.connectedPlayers++;
+                    gp.connected2server = true;
                     break;
                 // Server start game message
                 // - expects "01 start"

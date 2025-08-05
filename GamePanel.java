@@ -65,6 +65,10 @@ public class GamePanel extends JPanel implements Runnable{
 	String serverIP = "localhost";
 	int connectedPlayers = 0;
 	int readyPlayers = 0;
+	boolean connected2server = false;
+	long connectionMessageSentTime;
+	long connectionTimeOut;
+	long oneSec = 1000000000;
 		
 	public GamePanel (JFrame window) {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -88,22 +92,23 @@ public class GamePanel extends JPanel implements Runnable{
 		
 
 		if (JOptionPane.showConfirmDialog(this, "Do you want to run the server on this machine") == 0) {
-			port = Integer.parseInt(JOptionPane.showInputDialog("Please enter the port number you would like the server to run on").trim()); 
+			goodPort(); 
 			server = new Server(this, port);
 			server.start();
 		}
 		if (port == -1) {
 			serverIP = JOptionPane.showInputDialog("Please enter the IP address of the game server");
-			boolean goodPort = false;
-			while (goodPort == false) {
-				try {
-					port = Integer.parseInt(JOptionPane.showInputDialog("Please enter the port number to connect to on the server").trim());
-					if (port >= 49152 && port <= 65535) {
-						goodPort = true;
-					}
-				} catch (Exception e) {
-				}
-			}
+			goodPort();
+			// boolean goodPort = false;
+			// while (goodPort == false) {
+			// 	try {
+			// 		port = Integer.parseInt(JOptionPane.showInputDialog("Please enter the port number to connect to on the server").trim());
+			// 		if (port >= 49152 && port <= 65535) {
+			// 			goodPort = true;
+			// 		}
+			// 	} catch (Exception e) {
+			// 	}
+			// }
 			
 		}
 		client = new Client(this, serverIP, port); // Need better way of handling IP
@@ -112,6 +117,20 @@ public class GamePanel extends JPanel implements Runnable{
 		running = true;
 		gameThread = new Thread(this);
 		gameThread.start();
+	}
+
+	// Function to see if entered port is acceptable
+	public void goodPort() {
+		boolean goodPort = false;
+		while (goodPort == false) {
+			try {
+				port = Integer.parseInt(JOptionPane.showInputDialog("Please enter the port number to connect to on the server\n(Accepteble range = 49152 - 65535)").trim());
+				if (port >= 49152 && port <= 65535) {
+					goodPort = true;
+				}
+			} catch (Exception e) {
+			}
+		}
 	}
 
 	public synchronized void stop() {
@@ -130,6 +149,8 @@ public class GamePanel extends JPanel implements Runnable{
 		int drawCount = 0;
 
 		client.sendConnectPacket();
+		connectionMessageSentTime = System.nanoTime();
+		connectionTimeOut = connectionMessageSentTime + (10 * oneSec);
 		
 		while(running == true) {
 			currentTime = System.nanoTime();
@@ -138,6 +159,11 @@ public class GamePanel extends JPanel implements Runnable{
 			lastTime = currentTime;
 			
 			if (delta >= 1) {
+				// Check for connection timeout
+				if (connected2server == false && System.nanoTime() > connectionTimeOut) {
+					started = true;
+					finished = true;
+				}
 				update();
 				repaint();
 				delta--;

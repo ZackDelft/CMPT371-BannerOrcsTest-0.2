@@ -53,7 +53,7 @@ public class StartButton {
 		g2.drawImage(image, x, y, gp.tileSize*2, gp.tileSize, null);
 		g2.setColor(Color.WHITE);
 		g2.setFont(font);
-		g2.drawString("Connected Players: " + gp.connectedPlayers, gp.tileSize/2, gp.tileSize);
-		g2.drawString("Ready Players: " + gp.readyPlayers, gp.tileSize/2, gp.tileSize + 25);
+		g2.drawString("Connected Players: " + gp.connectedPlayers, gp.tileSize/2, gp.tileSize/2);
+		g2.drawString("Ready Players: " + gp.readyPlayers, gp.tileSize/2, gp.tileSize/2 + 25);
 	}
 }
