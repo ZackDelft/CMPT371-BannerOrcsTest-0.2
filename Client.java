@@ -124,6 +124,7 @@ public class Client extends Thread {
     // - server should return packet with "00" token and player ID to be used 
     public void sendConnectPacket() {
         String message = "00";
+        System.out.println("client connecting");
         sendMessage(message);
     }
     // Client ready packet

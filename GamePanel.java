@@ -94,7 +94,17 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 		if (port == -1) {
 			serverIP = JOptionPane.showInputDialog("Please enter the IP address of the game server");
-			port = Integer.parseInt(JOptionPane.showInputDialog("Please enter the port number to connect to on the server").trim());
+			boolean goodPort = false;
+			while (goodPort == false) {
+				try {
+					port = Integer.parseInt(JOptionPane.showInputDialog("Please enter the port number to connect to on the server").trim());
+					if (port >= 49152 && port <= 65535) {
+						goodPort = true;
+					}
+				} catch (Exception e) {
+				}
+			}
+			
 		}
 		client = new Client(this, serverIP, port); // Need better way of handling IP
 		client.start();
