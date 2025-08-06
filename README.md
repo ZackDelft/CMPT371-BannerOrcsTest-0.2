@@ -11,6 +11,9 @@
 
 This is a client-server java game meant for four players. Players battle over a flag, and If a player brings a flag to their corresponding zone, they will score a point. If a player reaches a score of 5, they win the game.
 
+### Video like of gameplay
+* https://www.youtube.com/watch?v=T1_Dr04uMuk
+
 ## How to run
 
 * Open the main folder in the terminal/command prompt
