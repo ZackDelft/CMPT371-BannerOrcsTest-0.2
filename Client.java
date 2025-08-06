@@ -135,6 +135,7 @@ public class Client extends Thread {
                 // - expects "08"
                 // - resets timeout timer
                 case "08":
+                    System.out.println("got 08");
                     gp.connectionTimeOut = System.nanoTime() + (10 * gp.oneSec);
                     break;
                 default:

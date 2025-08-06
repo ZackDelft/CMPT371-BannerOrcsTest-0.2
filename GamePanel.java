@@ -157,10 +157,10 @@ public class GamePanel extends JPanel implements Runnable{
 			
 			if (delta >= 1) {
 				// Check for connection timeout
-				// if (System.nanoTime() > connectionTimeOut) {
-				// 	connected2server = false;
-				// }
-				
+				if (System.nanoTime() > connectionTimeOut && finished == false) {
+					connected2server = false;
+				}
+
 				// Inital connection timeout
 				if (connected2server == false && System.nanoTime() > connectionTimeOut) {
 					timedout = true;
@@ -188,13 +188,13 @@ public class GamePanel extends JPanel implements Runnable{
 			startB.update(client);
 
 		}
-		else if (started == true && finished == false) {
+		else if (started == true && finished == false && timedout == false) {
 			for (int i = 0; i < players.length; i++) {
 				players[i].update(client);
 				zones[i].update();
 			}
 		}
-		else if (started == true && finished == true) {
+		else if (started == true && finished == true && timedout == false) {
 			scoreB.update(window);
 		}
 		else if (timedout == true) {

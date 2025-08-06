@@ -6,6 +6,30 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class Server extends Thread{
+
+    class CheckConnections extends Thread {
+        public void run() {
+            System.out.println("connection thread running");
+            String message;
+            while (gp.finished != true) {
+                // Send connection lives signals to players who needs it
+                // - if player hasn't recieved message in 5 sec, sends message containing "08"
+                // ------- Needs seperate thread
+                for (int i = 0; i < currentPlayers; i++) {
+                    // Send player a server lives message if hasn't recieved message in 5 sec
+                    if (players[i].lastTimeUpdated + (5 * gp.oneSec) < System.nanoTime()) {
+                        System.out.println("sending 08");
+                        message = "08";
+                        sendData(message.getBytes(), players[i].ip, players[i].port);
+                        players[i].lastTimeUpdated = System.nanoTime();
+                    }
+                    // If hasn't recieved message from client in 30 sec, assume connection lost
+                }
+            }
+            System.out.println("Closing CheckConnections thread");
+        }
+    }
+
     private DatagramSocket socket;
     private GamePanel gp;
     Entity[] players = new Entity[4];
@@ -28,6 +52,9 @@ public class Server extends Thread{
 
     public void run() {
         int id;
+        CheckConnections playerConnections = new CheckConnections();
+        playerConnections.start();
+
         while (gp.finished != true) { // If server seperate change end condition - might not be doing anything
             byte[] data = new byte[1024];
             DatagramPacket packet = new DatagramPacket(data, data.length);
@@ -54,6 +81,7 @@ public class Server extends Thread{
                         message = "06 " + currentPlayers;
                         for (int i = 0; i < currentPlayers; i++) {
                             sendData(message.getBytes(), players[i].ip, players[i].port);
+                            players[i].lastTimeUpdated = System.nanoTime();
                         }
                     }
                     break;
@@ -152,17 +180,7 @@ public class Server extends Thread{
                     break;
                 default:
                     break;
-            }
-            // Send connection lives signals to players who needs it
-            // - if player hasn't recieved message in 5 sec, sends message containing "08"
-            // ------- Needs seperate thread
-            // for (int i = 0; i < currentPlayers; i++) {
-            //     if (players[i].lastTimeUpdated + (5 * gp.oneSec) < System.nanoTime()) {
-            //         message = "08";
-            //         sendData(message.getBytes(), players[i].ip, players[i].port);
-            //         players[i].lastTimeUpdated = System.nanoTime();
-            //     }
-            // }   
+            }   
         }
         System.out.println("closing server socket");
         socket.close();
