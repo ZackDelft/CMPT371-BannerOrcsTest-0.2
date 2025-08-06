@@ -15,6 +15,14 @@ public class Server extends Thread{
                 // Send connection lives signals to players who needs it
                 // - if player hasn't recieved message in 5 sec, sends message containing "08"
                 // ------- Needs seperate thread
+
+                // to slow down thread
+                try {
+                    wait(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } 
+                
                 int cp = currentPlayers;
                 System.out.println(cp);
                 for (int i = 0; i < cp; i++) {
