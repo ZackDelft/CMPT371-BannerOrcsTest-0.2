@@ -15,9 +15,12 @@ public class Server extends Thread{
                 // Send connection lives signals to players who needs it
                 // - if player hasn't recieved message in 5 sec, sends message containing "08"
                 // ------- Needs seperate thread
-                for (int i = 0; i < currentPlayers; i++) {
+                int cp = currentPlayers;
+                System.out.println(cp);
+                for (int i = 0; i < cp; i++) {
                     // Send player a server lives message if hasn't recieved message in 5 sec
-                    if (players[i].lastTimeUpdated + (5 * gp.oneSec) < System.nanoTime()) {
+                    if ((players[i].lastTimeUpdated + (5 * gp.oneSec)) < System.nanoTime()) {
+                        System.out.println(players[i].lastTimeUpdated + " vs " + System.nanoTime());
                         System.out.println("sending 08");
                         message = "08";
                         sendData(message.getBytes(), players[i].ip, players[i].port);
@@ -50,7 +53,7 @@ public class Server extends Thread{
         }
     }
 
-    public void run() {
+    public synchronized void run() {
         int id;
         CheckConnections playerConnections = new CheckConnections();
         playerConnections.start();
