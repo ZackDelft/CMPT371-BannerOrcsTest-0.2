@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 public class Server extends Thread{
 
     class CheckConnections extends Thread {
-        public void run() {
+        public synchronized void run() {
             System.out.println("connection thread running");
             String message;
             while (gp.finished != true) {
