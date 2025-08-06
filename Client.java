@@ -5,6 +5,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import javax.swing.JOptionPane;
+
 public class Client extends Thread {
     private InetAddress ip;
     private DatagramSocket socket;
@@ -14,13 +16,22 @@ public class Client extends Thread {
     public Client(GamePanel gp, String ip, int port) {
         this.gp = gp;
         this.port = port;
+        boolean goodIP = false;
         try {
             this.socket = new DatagramSocket();
             this.ip = InetAddress.getByName(ip);
+            goodIP = true;
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            while (goodIP == false) {
+                ip = JOptionPane.showInputDialog("Please enter the IP address of the game server");
+                try {
+                    this.ip = InetAddress.getByName(ip);
+                    goodIP = true;
+                } catch (UnknownHostException e1) {
+                }
+            }
         }
     }
 
@@ -45,6 +56,9 @@ public class Client extends Thread {
                 // - expects "00 playerIDtoUse"
                 case "00":
                     gp.playerControl = Integer.parseInt(parsedMessage[1].trim());
+                    gp.connectedPlayers++;
+                    gp.connected2server = true;
+                    gp.connectionTimeOut = System.nanoTime() + (10 * gp.oneSec);
                     break;
                 // Server start game message
                 // - expects "01 start"
@@ -54,6 +68,7 @@ public class Client extends Thread {
                     if (parsedMessage[1].trim().equalsIgnoreCase("start")) {
                         gp.started = true;
                     }
+                    gp.connectionTimeOut = System.nanoTime() + (10 * gp.oneSec);
                     break;
                 // Server player position update
                 // - expects "02 playerID x y"
@@ -64,6 +79,7 @@ public class Client extends Thread {
                     int y = Integer.parseInt(parsedMessage[3].trim());
                     gp.players[id - 1].x = x;
                     gp.players[id - 1].y = y;
+                    gp.connectionTimeOut = System.nanoTime() + (10 * gp.oneSec);
                     break; 
                 // Server flag possession update message
                 // - expects "03 playerID [0=drop,1=pickup]"
@@ -79,6 +95,7 @@ public class Client extends Thread {
                         gp.players[id - 1].hasFlag = false;
                         gp.flag.possessed = 0;
                     }
+                    gp.connectionTimeOut = System.nanoTime() + (10 * gp.oneSec);
                     break;
                 // Server score update
                 // - expects "04 playerID [true=finished | false=notFinished] newFlagX newFlagY"
@@ -90,6 +107,7 @@ public class Client extends Thread {
                     if (parsedMessage[2].trim().equalsIgnoreCase("true")) {
                         gp.finished = true;
                     }
+                    gp.connectionTimeOut = System.nanoTime() + (10 * gp.oneSec);
                     break;
                 // Server throw message
                 // - expects "05 playerID"
@@ -97,11 +115,33 @@ public class Client extends Thread {
                 case "05":
                     id = Integer.parseInt(parsedMessage[1].trim());
                     gp.players[id - 1].throwPlayer();
+                    gp.connectionTimeOut = System.nanoTime() + (10 * gp.oneSec);
+                    break;
+                // Server number of players connected message
+                // - expects "06 numPlayersConnected"
+                // - updates Start screen
+                case "06":
+                    gp.connectedPlayers = Integer.parseInt(parsedMessage[1].trim());
+                    gp.connectionTimeOut = System.nanoTime() + (10 * gp.oneSec);
+                    break;
+                // Server number of players ready message
+                // - expects "07 numPlayersReady"
+                // - updates Start screen
+                case "07":
+                    gp.readyPlayers = Integer.parseInt(parsedMessage[1].trim());
+                    gp.connectionTimeOut = System.nanoTime() + (10 * gp.oneSec);
+                    break;
+                // Server connection lives message
+                // - expects "08"
+                // - resets timeout timer
+                case "08":
+                    gp.connectionTimeOut = System.nanoTime() + (10 * gp.oneSec);
                     break;
                 default:
                     break;
             }
         }
+        System.out.println("closing client socket");
         socket.close();
     }
 
@@ -110,6 +150,7 @@ public class Client extends Thread {
     // - server should return packet with "00" token and player ID to be used 
     public void sendConnectPacket() {
         String message = "00";
+        System.out.println("client connecting");
         sendMessage(message);
     }
     // Client ready packet

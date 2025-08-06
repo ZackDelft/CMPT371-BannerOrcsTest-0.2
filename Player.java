@@ -27,6 +27,7 @@ public class Player extends Entity{
 		this.ID = ID;
 		direction = "";
 		score = 0;
+		lastTimeUpdated = System.nanoTime(); // for client server timeout
 		nextThrowTime = System.nanoTime();
 		stopThrowingAt = System.nanoTime();
 		noLongerThrownAt = System.nanoTime();

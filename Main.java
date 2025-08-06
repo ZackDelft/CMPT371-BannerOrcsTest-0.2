@@ -5,9 +5,9 @@ public class Main {
 		JFrame window = new JFrame(); // create window
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Allows window to be closed properly
 		window.setAutoRequestFocus(false); // Cannot be resized
-		window.setTitle("Game Test 1");
+		window.setTitle("CMPT 371 - Group 25 - Banner Orcs");
 		
-		GamePanel gamePanel = new GamePanel();
+		GamePanel gamePanel = new GamePanel(window);
 		window.add(gamePanel);
 		
 		window.pack();
@@ -16,5 +16,6 @@ public class Main {
 		window.setVisible(true);
 		
 		gamePanel.startGameThread();
+		
 	}
 }
