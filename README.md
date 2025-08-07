@@ -46,10 +46,11 @@ This is a client-server java game meant for four players/orcs. Wild orcs battle 
 
 ## References used during development
 
-1. How to make a 2D game in Java
+1. Course materials and resourses provided by CMPT 371 - Data Communications and Networking - Simon Fraser University
+2. How to make a 2D game in Java
    * https://www.youtube.com/playlist?list=PL_QPQmz5C6WUF-pOQDsbsKbaBZqXj4qSq
    * Reference was made for Java game development basics and lead to certain design decisions, such as the use of the Delta method for FPS, as well as the tile management system for more flexible arena construction
-2. Multiplayer Support: Basic UDP Client/Server Ping Pong
+3. Multiplayer Support: Basic UDP Client/Server Ping Pong
    * https://www.youtube.com/watch?v=l1p21JWa_8s
    * Reference made to JOptionPane use and inspired client hosting the server thread
 
