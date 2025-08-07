@@ -1,10 +1,12 @@
+// CMPT 371 - Group 25 - Banner Orcs - ScoreZone.java
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-
+// Score zone class
+// - represents the zones the players need to bring the flag to
 public class ScoreZone {
 	GamePanel gp;
 	int zoneNum;
@@ -13,6 +15,7 @@ public class ScoreZone {
 	public String score;
 	Font zoneFont = new Font("Ariel", Font.CENTER_BASELINE, 25);
 	
+	// Constructor
 	public ScoreZone(GamePanel gp, int zoneNum) {
 		this.gp = gp;
 		this.zoneNum = zoneNum;
@@ -21,6 +24,7 @@ public class ScoreZone {
 		setPosition();
 	}
 	
+	// Set default location
 	public void setPosition() {
 		switch (zoneNum) {
 		case 1:
@@ -42,19 +46,18 @@ public class ScoreZone {
 		}
 	}
 	
+	// Updates the zone with players current score
 	public void update() {
 		score = String.valueOf(gp.players[zoneNum - 1].score);
 	}
 	
+	// Used by GamePanel to display the players score
 	public void draw(Graphics2D g2) {
 		
 		g2.setColor(Color.WHITE); 
 		g2.setFont(zoneFont); 
 		g2.drawString(score, x, y);
-		 
-		
-		/*
-		 * g2.setColor(Color.white); g2.fillRect(x, y, gp.tileSize, gp.tileSize);
-		 */
 	}
 }
+
+// ZMMD

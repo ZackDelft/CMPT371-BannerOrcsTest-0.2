@@ -1,3 +1,5 @@
+// CMPT 371 - Group 25 - Banner Orcs - Client.java
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -7,16 +9,21 @@ import java.net.UnknownHostException;
 
 import javax.swing.JOptionPane;
 
+// The main client thread that runs the game
 public class Client extends Thread {
-    private InetAddress ip;
-    private DatagramSocket socket;
-    private GamePanel gp;
-    private int port; // = 53333;
 
+    // Client variables
+    private InetAddress ip; // IP of server, is localhost if client is host
+    private DatagramSocket socket; // socket to use for communication
+    private GamePanel gp; // The GamePanel
+    private int port; // Port on server to connect to
+
+    // Constructor
     public Client(GamePanel gp, String ip, int port) {
         this.gp = gp;
         this.port = port;
-        boolean goodIP = false;
+        boolean goodIP = false; // Used for loop
+        // Try to connect to the server with given info
         try {
             this.socket = new DatagramSocket();
             this.ip = InetAddress.getByName(ip);
@@ -24,6 +31,7 @@ public class Client extends Thread {
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (UnknownHostException e) {
+            // If IP bad, ask for IP until good IP received
             while (goodIP == false) {
                 ip = JOptionPane.showInputDialog("Please enter the IP address of the game server");
                 try {
@@ -35,9 +43,11 @@ public class Client extends Thread {
         }
     }
 
+    // Main Client function
     public void run() {
         int id;
         while (gp.finished != true) {
+            // Initialize variables and wait for input from server
             byte[] data = new byte[1024];
             DatagramPacket packet = new DatagramPacket(data, data.length);
             try {
@@ -45,12 +55,25 @@ public class Client extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            // Handle the input data
+            // - Get the string
+            // - Parse the string
+            //   - String values are space seperated
+            //   - First value tells you its type
+            //   - All types:
+            //     - "00" = connection message
+            //     - "01" = player ready message
+            //     - "02" = player position update message
+            //     - "03" = flag possesion update message
+            //     - "04" = player scored message
+            //     - "05" = throw message
+            //     - "06" = total players connected message
+            //     - "07" = total players ready message 
+            //     - "08" = keep alive message  
+            // - When receiving messages from server, players update timeout accordingly
             String message = new String(packet.getData());
-            System.out.println("Server > " + message);
+            System.out.println("Server message > " + message);
             String[] parsedMessage = message.split(" ");
-            // if (parsedMessage[0].equalsIgnoreCase("00")) {
-            //     gp.playerControl = Integer.parseInt(parsedMessage[1].trim());
-            // }
             switch (parsedMessage[0].trim()) {
                 // Server connection packet
                 // - expects "00 playerIDtoUse"
@@ -145,6 +168,8 @@ public class Client extends Thread {
         socket.close();
     }
 
+    // Function to send specific messages to the server //
+
     // Client conection packet
     // - contains token "00" as signifier 
     // - server should return packet with "00" token and player ID to be used 
@@ -207,3 +232,5 @@ public class Client extends Thread {
         }
     }
 }
+
+// ZMMD

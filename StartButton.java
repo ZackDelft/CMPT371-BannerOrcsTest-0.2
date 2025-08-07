@@ -1,20 +1,27 @@
+// CMPT 371 - Group 25 - Banner Orcs - StartButton.java
+
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 
+// Class to control and display the start button when players connect to the server
 public class StartButton {
+
+	// Needs the client thread to send messages to the server
+	// - messages sent
+	//   - "01 readyStatus playerID" ready message
 	Client client;
+
+	// Other needed variables
 	GamePanel gp;
-	BufferedImage startImage1; // coloured
+	BufferedImage startImage1; // coloured image
 	BufferedImage startImage2; // grey scale image
-	KeyHandler keyH;
-	int x, y;
+	KeyHandler keyH; // key handler for enter presses
+	int x, y; // location of image on screen
 	
-	
+	// Constructor
 	public StartButton(GamePanel gp, KeyHandler keyH) {
 		this.gp = gp;
 		this.keyH = keyH;
@@ -29,6 +36,9 @@ public class StartButton {
 		}
 	}
 	
+	// Update function
+	// - if player has hit 'enter', set player to ready/unready
+	// - sends updates info to server
 	public void update(Client client) {
 		if (keyH.enterPressed == true && gp.timedout == false) {
 			if (gp.ready == false) {
@@ -37,11 +47,12 @@ public class StartButton {
 			else {
 				gp.ready = false;
 			}
-			client.sendReadyPacket(gp.ready);
-			keyH.enterPressed = false;
+			client.sendReadyPacket(gp.ready); // sends "01 readyStatus playerID" ready message
+			keyH.enterPressed = false; // to stop message blasts
 		}
 	}
 	
+	// Used by GamePanel to draw start button on screen
 	public void draw(Graphics2D g2) {
 		BufferedImage image = null;
 		if (gp.ready == false) {
@@ -57,3 +68,5 @@ public class StartButton {
 		g2.drawString("Ready Players: " + gp.readyPlayers, gp.tileSize/2, gp.tileSize/2 + 25);
 	}
 }
+
+// ZMMD

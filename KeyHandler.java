@@ -1,10 +1,12 @@
+// CMPT 371 - Group 25 - Banner Orcs - KeyHandler.java
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener{
 	
+	// Button press variables
 	public boolean upPressed, downPressed, leftPressed, rightPressed, spacePressed, enterPressed;
-	// public int playerControl = 1;
 
 	// UNUSED
 	@Override
@@ -82,3 +84,5 @@ public class KeyHandler implements KeyListener{
 	}
 
 }
+
+// ZMMD
