@@ -43,7 +43,6 @@ public class Flag extends FlagSuper{
 		possessed = 0;
 		x = (int) ((Math.random() * ((gp.maxScreenCol - 5) * gp.tileSize)) + 2*gp.tileSize);
 		y = (int) ((Math.random() * ((gp.maxScreenCol - 5) * gp.tileSize)) + 2*gp.tileSize);
-		System.out.println("x: " + x + " y: " + y);
 	}
 	
 	// Used by gamePanel to draw the flag

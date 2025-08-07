@@ -14,7 +14,7 @@ public class Server extends Thread{
     // - checks players every 100 miliseconds
     class CheckConnections extends Thread {
         public synchronized void run() {
-            System.out.println("connection thread running");
+            System.out.println("CheckConnection thread running");
             String message = "08"; // keep alive message to be transmitted
             while (gp.finished != true) {
                 // to slow down thread
@@ -25,12 +25,9 @@ public class Server extends Thread{
                 } 
 
                 int cp = currentPlayers; // gets current number of players from the main server thread
-                System.out.println(cp);
                 for (int i = 0; i < cp; i++) {
                     // Send player a server lives message if hasn't recieved message in 5 sec
                     if ((players[i].lastTimeUpdated + (5 * gp.oneSec)) < System.nanoTime()) {
-                        System.out.println(players[i].lastTimeUpdated + " vs " + System.nanoTime());
-                        System.out.println("sending 08");
                         sendData(message.getBytes(), players[i].ip, players[i].port); // send message to players IP and port 
                         players[i].lastTimeUpdated = System.nanoTime(); // reset keep alive message timer
                     }
@@ -46,7 +43,6 @@ public class Server extends Thread{
                     // sends "01 start" if all 4 players ready
                     message = "01 start";
                     for (int i = 0; i < currentPlayers; i++) {
-                        System.out.println("sending start to player " + i + " in timeout");
                         sendData(message.getBytes(), players[i].ip, players[i].port);
                         players[i].lastTimeUpdated = System.nanoTime();
                     }
@@ -122,7 +118,7 @@ public class Server extends Thread{
             //     - "08" = keep alive message  
             // - When sending messages to clients, server updates players accordingly for keep alive messages         
             String message = new String(packet.getData());
-            System.out.println("Client > " + message + " Port: " + packet.getPort() + " ip: " + packet.getAddress().getHostAddress());
+            System.out.println("Client message > " + message + "\nFrom: Port: " + packet.getPort() + " ip: " + packet.getAddress().getHostAddress());
             String[] parseMessage = message.split(" ");
             switch (parseMessage[0].trim()) {
                 // connection message
@@ -221,7 +217,6 @@ public class Server extends Thread{
                         fin = "true";
                     }
                     message = "04 " + id + " " + fin + " " + flag.x + " " + flag.y;
-                    System.out.println(message);
                     for (int i = 0; i < currentPlayers; i++) {
                         sendData(message.getBytes(), players[i].ip, players[i].port);
                         players[i].lastTimeUpdated = System.nanoTime();

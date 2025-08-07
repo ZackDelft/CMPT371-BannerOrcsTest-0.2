@@ -72,7 +72,7 @@ public class Client extends Thread {
             //     - "08" = keep alive message  
             // - When receiving messages from server, players update timeout accordingly
             String message = new String(packet.getData());
-            System.out.println("Server > " + message);
+            System.out.println("Server message > " + message);
             String[] parsedMessage = message.split(" ");
             switch (parsedMessage[0].trim()) {
                 // Server connection packet
@@ -158,7 +158,6 @@ public class Client extends Thread {
                 // - expects "08"
                 // - resets timeout timer
                 case "08":
-                    System.out.println("got 08");
                     gp.connectionTimeOut = System.nanoTime() + (10 * gp.oneSec);
                     break;
                 default:

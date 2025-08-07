@@ -219,7 +219,6 @@ public class Player extends Entity{
 	// - Currently players only get thrown in vertical, horizontal and 45 degree angles
 	// - possible for player not to move at all (thrown to ground)
 	public void throwPlayer() {
-		System.out.println("THROWN--------------------");
 		if (hasFlag) {
 			gp.flag.possessed = 0;
 			hasFlag = false;

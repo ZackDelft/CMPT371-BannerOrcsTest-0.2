@@ -48,7 +48,6 @@ public class ScoreBoard {
 	// - whatches for players to press 'space' to close the game
 	public void update() {
 		if (gp.keyH.enterPressed == true) {
-			System.out.println("enter-pressed");
 			gp.running = false;
 		}
 	}
