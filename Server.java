@@ -36,6 +36,21 @@ public class Server extends Thread{
                     }
                     // If hasn't recieved message from client in 30 sec, assume connection lost
                 }
+
+                // Create countdown check to set all players ready
+                // - is currently set to a 2 min counter
+                if (gp.started == false && currentPlayers == 4 && readyPlayers > 0 && allPlayersConnectedTime == -1) {
+                    allPlayersConnectedTime = System.nanoTime();
+                }
+                if (gp.started == false && currentPlayers == 4 && readyPlayers > 0 && System.nanoTime() >= (allPlayersConnectedTime + (120 * gp.oneSec))) {
+                    // sends "01 start" if all 4 players ready
+                    message = "01 start";
+                    for (int i = 0; i < currentPlayers; i++) {
+                        System.out.println("sending start to player " + i + " in timeout");
+                        sendData(message.getBytes(), players[i].ip, players[i].port);
+                        players[i].lastTimeUpdated = System.nanoTime();
+                    }
+                }
             }
             System.out.println("Closing CheckConnections thread");
         }
@@ -49,6 +64,10 @@ public class Server extends Thread{
     int readyPlayers = 0; // current number of players ready
     Flag flag;
     int port; // port to be used by server
+
+    // If a player quits before pressing ready to starting the game, players will get stuck on start screen
+    // - following variables are used to create 2 min countdown until setting all players to ready  
+    Long allPlayersConnectedTime = -1L;
 
     // Server constructor
     public Server(GamePanel gp, int port) {
@@ -218,7 +237,7 @@ public class Server extends Thread{
                     break;
                 default:
                     break;
-            }   
+            }
         }
         System.out.println("closing server socket");
         // Close the socket
