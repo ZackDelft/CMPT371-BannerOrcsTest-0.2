@@ -11,7 +11,11 @@
 This is a client-server java game meant for four players/orcs. Wild orcs battle over a banner for your amusement, with the hopes of bringing the flag back to their corresponding zone and bring glory to their clans. Doing so scores a point and if a orc reaches a score of 5, they win the game and are declared Warboss.
 
 ### Video like of gameplay
-* https://www.youtube.com/watch?v=T1_Dr04uMuk
+* https://www.youtube.com/watch?v=KqpkDEARK7E
+* Original upload:
+  * https://www.youtube.com/watch?v=T1_Dr04uMuk
+  * Edited by Arshdeep Mann
+    * https://github.com/devarshmann
 
 ## How to run and play the game
 
