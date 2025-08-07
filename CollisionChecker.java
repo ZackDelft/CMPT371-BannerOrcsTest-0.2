@@ -1,7 +1,11 @@
+// CMPT 371 - Group 25 - Banner Orcs - CollisionChecker.java
+
+// Used to detect all colisions within the game
 public class CollisionChecker {
 	
 	GamePanel gp;
 	
+	// Constructor
 	public CollisionChecker(GamePanel gp) {
 		this.gp = gp;
 	}
@@ -106,6 +110,7 @@ public class CollisionChecker {
 	}
 	
 	// Check if player touched flag
+	// - If a player picks up the flag a "03" message is sent to server with new holder id
 	public void flagChecker(Entity entity, Client client) {
 		
 		int flagTop = gp.flag.y;
@@ -125,7 +130,7 @@ public class CollisionChecker {
 				if (entity.isThrown == false) {
 					gp.flag.setHolder(entity);
 					entity.hasFlag = true;
-					client.sendFlagPossesion();
+					client.sendFlagPossesion(); // Sends "03 flag.possessed" to server
 				}
 			}
 			break;
@@ -135,7 +140,7 @@ public class CollisionChecker {
 				if (entity.isThrown == false) {
 					gp.flag.setHolder(entity);
 					entity.hasFlag = true;
-					client.sendFlagPossesion();
+					client.sendFlagPossesion(); // Sends "03 flag.possessed" to server
 				}
 			}
 			break;
@@ -145,7 +150,7 @@ public class CollisionChecker {
 				if (entity.isThrown == false) {
 					gp.flag.setHolder(entity);
 					entity.hasFlag = true;
-					client.sendFlagPossesion();
+					client.sendFlagPossesion(); // Sends "03 flag.possessed" to server
 				}
 			}
 			break;
@@ -155,16 +160,11 @@ public class CollisionChecker {
 				if (entity.isThrown == false) {
 					gp.flag.setHolder(entity);
 					entity.hasFlag = true;
-					client.sendFlagPossesion();
+					client.sendFlagPossesion(); // Sends "03 flag.possessed" to server
 				}
 			}
 			break;
 		}
-		// if (entity.hasFlag == true) {
-		// 	// send signal to server player has picked up flag
-		// 	// Client flag pickup communication
-		// 	//client.sendFlagPossesion();
-		// }
 	}
 	
 	// Check if player scores
@@ -187,22 +187,18 @@ public class CollisionChecker {
 				(entityLeft < zoneRight && entityLeft > zoneLeft && entityBottom >= zoneTop && entityBottom <= zoneBottom && entity.hasFlag) ||
 				(entityRight < zoneRight && entityRight > zoneLeft && entityTop >= zoneTop && entityTop <= zoneBottom && entity.hasFlag) || 
 				(entityRight < zoneRight && entityRight > zoneLeft && entityBottom >= zoneTop && entityBottom <= zoneBottom && entity.hasFlag)) {
-			// entity.score++;
-			// entity.hasFlag = false;
-			// gp.flag.sendRandomSpot();
-			// if (entity.score >= 5) {
-			// 	gp.finished = true;
-			// }
-
 			
 			entity.hasFlag = false;
 			gp.flag.possessed = 0;
-			client.sendFlagPossesion();
-			client.sendScoredMessage();
+			entity.direction = ""; // Seeing if this will stop an extremely rare bug 
+			client.sendFlagPossesion(); // sends "03 flag.possessed" to server - test moving to server with "04" score messages
+			client.sendScoredMessage(); // sends "04 playerID" to server
 		}
 	}
 	
 	// Check if within throw distance
+	// - triggered by 'space' press
+	// - sends "05 playerBeingThrownID" to server for all players in range
 	public void checkThrowRange(Entity entity, Client client) {
 		
 		int entityTop = entity.y;
@@ -231,10 +227,12 @@ public class CollisionChecker {
 					entity.nextThrowTime = System.nanoTime() + 5000000000L; // throw again in 5 seconds
 					entity.stopThrowingAt = System.nanoTime() + 500000000L; // Stop throwing in 1 second
 					entity.throwing = true;
-					client.sendThrowMessage(gp.players[i].ID);
+					client.sendThrowMessage(gp.players[i].ID); // Sends "05 playerBeingThrownID"
 				}
 			}
 		}
 		
 	}
 }
+
+// ZMMD

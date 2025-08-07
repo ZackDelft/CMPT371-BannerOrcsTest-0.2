@@ -1,3 +1,5 @@
+// CMPT 371 - Group 25 - Banner Orcs - TileManager.java
+
 import java.awt.Graphics2D;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,22 +8,30 @@ import java.io.InputStreamReader;
 
 import javax.imageio.ImageIO;
 
+// Tile management class
+// - Uses arena.txt to build the play area
+//   - numbers corrispond to images and collision/solid status
+// - See Main.java for references used
 public class TileManager {
+
+	// Needed variables
 	GamePanel gp;
-	public Tile[] tile;
 	int windowSize;
+	public Tile[] tile; // array to hold the different tiles that can be used
+	public int mapTileNum[][]; // The actual arena
 	
-	public int mapTileNum[][];
-	
+	// constructor
 	public TileManager(GamePanel gp) {
 		this.gp = gp;
 		
-		tile = new Tile[10];
+		tile = new Tile[6];
 		mapTileNum = new int[gp.maxScreenCol][gp.maxScreenCol];
 		
 		getTileImage();
 		loadMap("/res/maps/arena.txt");
 	}
+
+	// Function to initialize tile array indexes and load corrisponding images
 	public void getTileImage() {
 		try {
 			tile[0] = new Tile();
@@ -41,6 +51,10 @@ public class TileManager {
 			e.printStackTrace();
 		}
 	}
+
+	// Function to build the arena
+	// - goes row by row through arena.txt
+	//   - integer values (columns) are space seperated and correspond to the tile to be used in the draw method
 	public void loadMap(String arena) {
 		try {
 			InputStream is = getClass().getResourceAsStream(arena);
@@ -67,29 +81,11 @@ public class TileManager {
 			e.printStackTrace();
 		}
 	}
+
+	// Function used by GamePanel to draw the arena
+	// - uses 2d array of integers to get index of image to use
+	// - fills screen row by row, column by column
 	public void draw(Graphics2D g2) {
-		
-		/*
-		 * for (int i = 0; (i * gp.tileSize) < gp.screenWidth; i++) { for (int j = 0; (j
-		 * * gp.tileSize) < gp.screenWidth; j++) { if (((i*gp.tileSize) ==
-		 * (gp.screenWidth / 2) || (i*gp.tileSize) == ((gp.screenWidth / 2) -
-		 * gp.tileSize)) && (j < 2)) { g2.drawImage(tile[2].image, i*gp.tileSize,
-		 * j*gp.tileSize, gp.tileSize, gp.tileSize, null); } else if (((i*gp.tileSize)
-		 * == (gp.screenWidth / 2) || (i*gp.tileSize) == ((gp.screenWidth / 2) -
-		 * gp.tileSize)) && (j >= gp.maxScreenCol - 2)) { g2.drawImage(tile[4].image,
-		 * i*gp.tileSize, j*gp.tileSize, gp.tileSize, gp.tileSize, null); } else if
-		 * (((j*gp.tileSize) == (gp.screenWidth / 2) || (j*gp.tileSize) ==
-		 * ((gp.screenWidth / 2) - gp.tileSize)) && (i >= gp.maxScreenCol - 2)) {
-		 * g2.drawImage(tile[5].image, i*gp.tileSize, j*gp.tileSize, gp.tileSize,
-		 * gp.tileSize, null); } else if (((j*gp.tileSize) == (gp.screenWidth / 2) ||
-		 * (j*gp.tileSize) == ((gp.screenWidth / 2) - gp.tileSize)) && (i < 2)) {
-		 * g2.drawImage(tile[3].image, i*gp.tileSize, j*gp.tileSize, gp.tileSize,
-		 * gp.tileSize, null); } else if ((i < 2) || (i >= gp.maxScreenCol - 2) || (j <
-		 * 2) || (j >= gp.maxScreenCol - 2)) { g2.drawImage(tile[1].image,
-		 * i*gp.tileSize, j*gp.tileSize, gp.tileSize, gp.tileSize, null); } else {
-		 * g2.drawImage(tile[0].image, i*gp.tileSize, j*gp.tileSize, gp.tileSize,
-		 * gp.tileSize, null); } } }
-		 */
 		
 		int col = 0;
 		int row = 0;
@@ -110,3 +106,5 @@ public class TileManager {
 		}
 	}
 }
+
+// ZMMD
