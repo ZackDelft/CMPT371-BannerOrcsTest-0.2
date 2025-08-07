@@ -15,7 +15,7 @@ public class Server extends Thread{
     class CheckConnections extends Thread {
         public synchronized void run() {
             System.out.println("CheckConnection thread running");
-            String message = "08"; // keep alive message to be transmitted
+            String message;
             while (gp.finished != true) {
                 // to slow down thread
                 try {
@@ -23,8 +23,9 @@ public class Server extends Thread{
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } 
-
+                message = "08"; // keep alive message to be transmitted
                 int cp = currentPlayers; // gets current number of players from the main server thread
+                boolean gameStarted = started;
                 for (int i = 0; i < cp; i++) {
                     // Send player a server lives message if hasn't recieved message in 5 sec
                     if ((players[i].lastTimeUpdated + (5 * gp.oneSec)) < System.nanoTime()) {
@@ -36,11 +37,12 @@ public class Server extends Thread{
 
                 // Create countdown check to set all players ready
                 // - is currently set to a 2 min counter
-                if (gp.started == false && currentPlayers == 4 && readyPlayers > 0 && allPlayersConnectedTime == -1) {
+                if(gameStarted == false && currentPlayers == 4 && readyPlayers > 0 && allPlayersConnectedTime == -1) {
                     allPlayersConnectedTime = System.nanoTime();
                 }
-                if (gp.started == false && currentPlayers == 4 && readyPlayers > 0 && System.nanoTime() >= (allPlayersConnectedTime + (120 * gp.oneSec))) {
+                if (gameStarted == false && currentPlayers == 4 && readyPlayers > 0 && System.nanoTime() >= (allPlayersConnectedTime + (120 * gp.oneSec))) {
                     // sends "01 start" if all 4 players ready
+                    started = true;
                     message = "01 start";
                     for (int i = 0; i < currentPlayers; i++) {
                         sendData(message.getBytes(), players[i].ip, players[i].port);
@@ -60,6 +62,7 @@ public class Server extends Thread{
     int readyPlayers = 0; // current number of players ready
     Flag flag;
     int port; // port to be used by server
+    boolean started = false;
 
     // If a player quits before pressing ready to starting the game, players will get stuck on start screen
     // - following variables are used to create 2 min countdown until setting all players to ready  
@@ -160,6 +163,7 @@ public class Server extends Thread{
                     }
                     if (currentPlayers == players.length) {
                         if (allReady(players) == true) {
+                            started = true;
                             message = "01 start";
                             for (int i = 0; i < players.length; i++) {
                                 players[i].lastTimeUpdated = System.nanoTime();
