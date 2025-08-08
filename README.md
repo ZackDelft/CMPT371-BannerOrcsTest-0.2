@@ -1,14 +1,14 @@
 # CMPT 371 Group 25 - Banner Orcs
 
-## Members
+## Group 25 Team Members
 * Zachariah Delft
-* 
-* 
-* 
+* Raffi Macaraig
+* Arshdeep Mann
+* Rithik Ramamurthy
   
 ## Game Description
 
-This is a client-server java game meant for four players/orcs. Wild orcs battle over a banner for your amusement, with the hopes of bringing the flag back to their corresponding zone and bring glory to their clans. Doing so scores a point and if a orc reaches a score of 5, they win the game and are declared Warboss.
+Banner Orcs is a fast paced four player client-server java game, that utilises the UDP transport-layer protocol and socket programming as the method of communication between players and the server. In this game, savage orcs battle over a contested banner for your amusement, with the hopes of bringing the banner back to their corresponding zone and bring glory to their respective clans. Doing so will score a point and if an orc reaches a score limit of 5, they win the game and are declared ‘Warboss’. 
 
 ### Video like of gameplay
 * https://www.youtube.com/watch?v=KqpkDEARK7E
@@ -17,19 +17,19 @@ This is a client-server java game meant for four players/orcs. Wild orcs battle 
   * Edited by Arshdeep Mann
     * https://github.com/devarshmann
 
-## How to run and play the game
-
-* Open the main folder in the terminal/command prompt
-* Run the command "javac Main.java"
-* Run the command "java Main.java"
-* First player to run Main.java should choose yes for starting the server
-  * This player will enter the port on which they would like the game to run
-  * This player's client thread will automatically use the previously entered port number and localhost as the IP address for the server
-* Subsequent players should click the option no to starting the server, if they want to connect to the game without issues forming
-  * You will then need to enter the IP and port number of the host server
-* You will then be presented with a start sreen
-  * Game will start when all player are ready or atleast one player is ready and the 2 minute countdown timer elapses
-* Enjoy?
+## Building and Running the Program
+* Step 1: Open up the directory containing the repository in your terminal
+* Step 2: Within the directory containing Main.java, run the command ‘javac Main.java’
+* Step 3: To run the application, run the command ‘java Main.java’
+  *  Note: This application was developed using JDK 23
+    
+## Starting a Server and Joining a Game
+* When first running the program, the user will be asked if they would like to host a game
+on their machine.
+* If the user chooses to run a host server, they will be prompted to enter the port number of which they would like the application to run on. Once entering a valid port number, their client thread will automatically connect to the server using the IP address 127.0.0.1 (localhost) and the previously entered port number.
+* If the user chooses to not run a host server, they will be prompted to enter the IP
+address and port number of the host computer
+* Once connected, players will be presented with the start screen
 
 ## Controls
 
