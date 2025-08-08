@@ -17,6 +17,10 @@ Banner Orcs is a fast paced four player client-server java game, that utilises t
   * Edited by Arshdeep Mann
     * https://github.com/devarshmann
 
+## Link to BannerOrcsTest
+* https://github.com/ZackDelft/CMPT371-BannerOrcsTest
+  * This was the original test version of the game without any of the client-server functionality seen in the final 0.2 version
+
 ## Building and Running the Program
 * Step 1: Open up the directory containing the repository in your terminal
 * Step 2: Within the directory containing Main.java, run the command ‘javac Main.java’
