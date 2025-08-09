@@ -63,5 +63,5 @@ address and port number of the host computer
    * Reference made to JOptionPane use and inspired client hosting the server thread
 
 ##
-<sub><sup>Artwork by Zachariah Delft.</sup></sub>
+<sub><sup>Artwork by Zachariah Delft - please do not redistribute.</sup></sub>
 ##
